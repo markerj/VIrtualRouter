@@ -52,11 +52,13 @@ int main(){
 	if(bind(packet_socket,tmp->ifa_addr,sizeof(struct sockaddr_ll))==-1){
 	  perror("bind");
 	}
+	struct sockaddr_11 *macsoc = (struct sockaddr_11 *) tmp-> ifa_addr;
+	ifmacaddr = (unsigned char * ) macsoc->sll_addr;
       }
     }
   }
   //free the interface list when we don't need it anymore
-  freeifaddrs(ifaddr);
+  //freeifaddrs(ifaddr);
 
   //loop and recieve packets. We are only looking at one interface,
   //for the project you will probably want to look at more (to do so,
@@ -80,7 +82,18 @@ int main(){
       continue;
     //start processing all others
     printf("Got a %d byte packet\n", n);
-    
+	
+    //get info
+    char* tempEth;
+    unsigned short  tempType;
+    struct ether_header *eth = (struct ether_header*)buf;
+	  
+    struct arpheader {
+	    
+    }
+    //memcopy
+	 
+	  
     //what else to do is up to you, you can send packets with send,
     //just like we used for TCP sockets (or you can use sendto, but it
     //is not necessary, since the headers, including all addresses,
