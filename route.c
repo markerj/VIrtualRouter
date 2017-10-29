@@ -88,11 +88,21 @@ int main(){
     unsigned short  tempType;
     struct ether_header *eth = (struct ether_header*)buf;
 	  
+    tempEth=ether_ntoa((struct ether_addr*) &eth->ether_dhost);
+    printf("Destination address: %s\n", tempEth);
+    	  
     struct arpheader {
 	    
     }
     //memcopy
 	 
+	
+	  
+	  
+	  
+	  
+	  
+	  
 	  
     //what else to do is up to you, you can send packets with send,
     //just like we used for TCP sockets (or you can use sendto, but it
