@@ -94,9 +94,6 @@ int main(){
     }  
       printf("Got packet from interface: %d, on router 1\n", recvaddr.sll_ifindex);
       printf("The length of the address is: %u\n", recvaddr.sll_halen);
-      printf("Physical layer address is: %u:%u:%u:%u:%u:%u\n\n", recvaddr.sll_addr[0], 
-	recvaddr.sll_addr[1], recvaddr.sll_addr[2], recvaddr.sll_addr[3],
-	recvaddr.sll_addr[4], recvaddr.sll_addr[5]);
   
 	     
   }
