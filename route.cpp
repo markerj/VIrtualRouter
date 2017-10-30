@@ -1,3 +1,10 @@
+#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <string.h>
+#include <cstring>
+#include <arpa/inet.h>
 #include <sys/socket.h> 
 #include <netpacket/packet.h> 
 #include <net/ethernet.h>
@@ -82,7 +89,7 @@ int main(){
     //is not necessary, since the headers, including all addresses,
     //need to be in the buffer you are sending)
 	  
-    if((((buf[12]) << 8) + buf[13] == ETH_P_ARP) {
+    if((((buf[12]) << 8) + buf[13]) == ETH_P_ARP) {
        printf("Got an ARP request\n"); 
     }  
       printf("Got packet from interface: %d, on router 1\n", recvaddr.sll_ifindex);
