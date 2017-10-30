@@ -98,7 +98,7 @@ int main(){
 
     }
     	  
-    struct arpheader arpdr;
+    struct arpheader arphdr;
     //memcopy
 	 
 	
