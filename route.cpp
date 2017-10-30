@@ -88,14 +88,14 @@ int main(){
     //just like we used for TCP sockets (or you can use sendto, but it
     //is not necessary, since the headers, including all addresses,
     //need to be in the buffer you are sending)
+	 
+    printf("Got packet from interface: %d, on router 1\n", recvaddr.sll_ifindex);
+    printf("The length of the address is: %u\n", recvaddr.sll_halen);
 	  
-    if((((buf[12]) << 8) + buf[13]) == ETH_P_ARP) {
-       printf("Got an ARP request\n"); 
-    }  
-      printf("Got packet from interface: %d, on router 1\n", recvaddr.sll_ifindex);
-      printf("The length of the address is: %u\n", recvaddr.sll_halen);
-  
-	     
+    
+	  
+    
+    	  
   }
   //exit
   return 0;
