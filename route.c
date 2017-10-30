@@ -84,16 +84,21 @@ int main(){
     printf("Got a %d byte packet\n", n);
 	
     //get info
-    char* tempEth;
+    
     unsigned short  tempType;
+    char* tempEth;
     struct ether_header *eth = (struct ether_header*)buf;
 	  
     tempEth=ether_ntoa((struct ether_addr*) &eth->ether_dhost);
     printf("Destination address: %s\n", tempEth);
-    	  
+    tempEth=ether_ntoa((struct ether_addr*) &eth->ether_shost);
+    printf("Source address: %s\n", tempEth);	
+	  
     struct arpheader {
-	    
+
     }
+    	  
+    struct arpheader arpdr;
     //memcopy
 	 
 	
