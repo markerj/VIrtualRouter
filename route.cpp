@@ -10,6 +10,7 @@ int main(){
   int packet_socket;
   //get list of interfaces (actually addresses)
   struct ifaddrs *ifaddr, *tmp;
+  char *interface, *src_ip, *dst_ip, *rec_ip, *target;
   if(getifaddrs(&ifaddr)==-1){
     perror("getifaddrs");
     return 1;
@@ -60,7 +61,8 @@ int main(){
   while(1){
     char buf[1500];
     struct sockaddr_ll recvaddr;
-    int recvaddrlen=sizeof(struct sockaddr_ll);
+    //int recvaddrlen=sizeof(struct sockaddr_ll);
+    socklen_t recvaddrlen=sizeof(struct sockaddr_ll);
     //we can use recv, since the addresses are in the packet, but we
     //use recvfrom because it gives us an easy way to determine if
     //this packet is incoming or outgoing (when using ETH_P_ALL, we
@@ -79,7 +81,17 @@ int main(){
     //just like we used for TCP sockets (or you can use sendto, but it
     //is not necessary, since the headers, including all addresses,
     //need to be in the buffer you are sending)
-    
+	  
+    if((((buf[12]) << 8) + buf[13] == ETH_P_ARP) {
+       printf("Got an ARP request\n"); 
+    }  
+      printf("Got packet from interface: %d, on router 1\n", recvaddr.sll_ifindex);
+      printf("The length of the address is: %u\n", recvaddr.sll_halen);
+      printf("Physical layer address is: %u:%u:%u:%u:%u:%u\n\n", recvaddr.sll_addr[0], 
+	recvaddr.sll_addr[1], recvaddr.sll_addr[2], recvaddr.sll_addr[3],
+	recvaddr.sll_addr[4], recvaddr.sll_addr[5]);
+  
+	     
   }
   //exit
   return 0;
