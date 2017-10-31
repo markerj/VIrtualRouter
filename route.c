@@ -12,6 +12,18 @@
 #include <sys/types.h>
 #include <ifaddrs.h>
 
+struct arpheader {
+  unsigned short int   arp_hardware;		/* Format of hardware address.  */
+  unsigned short int   arp_protocol;		/* Format of protocol address.  */
+  unsigned char        arp_hardware_length;	/* Length of hardware address.  */
+  unsigned char        arp_protocol_length;	/* Length of protocol address.  */
+  unsigned short int   arp_op;			/* ARP opcode (command).  */
+  unsigned char        arp_sha[6];		/* Sender hardware address.  */
+  unsigned char        arp_sip[4];		/* Sender IP address.  */
+  unsigned char        arp_tha[6];		/* Target hardware address.  */
+  unsigned char        arp_tip[4];		/* Target IP address.  */
+};
+
 int main(){
   int packet_socket;
   //get list of interfaces (actually addresses)
@@ -95,19 +107,7 @@ int main(){
     printf("Source address: %s\n", tempEth);	
     int size = sizeof(eth->ether_dhost)+sizeof(eth->ether_shost)+sizeof(eth->ether_type);
     printf("Size of Eth header: %d\n", size); 
-	 
-    struct arpheader {
-        unsigned short int   arp_hardware;		/* Format of hardware address.  */
-    	unsigned short int   arp_protocol;		/* Format of protocol address.  */
-    	unsigned char        arp_hardware_length;	/* Length of hardware address.  */
-    	unsigned char        arp_protocol_length;	/* Length of protocol address.  */
-    	unsigned short int   arp_op;			/* ARP opcode (command).  */
-    	unsigned char        arp_sha[6];		/* Sender hardware address.  */
-    	unsigned char        arp_sip[4];		/* Sender IP address.  */
-    	unsigned char        arp_tha[6];		/* Target hardware address.  */
-    	unsigned char        arp_tip[4];		/* Target IP address.  */
-    }
-    	  
+
     struct arpheader arphdr;
 
     memcpy(&arphdr, &buf[sizeof(struct ether_header)], sizeof(struct arpheader));
