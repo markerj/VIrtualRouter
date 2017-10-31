@@ -177,7 +177,7 @@ int main() {
             ethhdrsend = (struct ethheader *) sendbuf;
             memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
             memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
-            ethhdrsend->ether_type = htons(0x806);
+            ethhdrsend->eth_type = htons(0x806);
 
             //send arp reply
             sendto(packet_socket, bufsend, 1500, 0, (struct sockaddr *) &lladdr, sizeof(lladdr));
