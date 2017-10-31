@@ -7,6 +7,7 @@
 #include <ifaddrs.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <string.h>
 
 //arp header
 struct arpheader {
