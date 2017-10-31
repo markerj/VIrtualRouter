@@ -109,6 +109,8 @@ int main(){
     }
     	  
     struct arpheader arphdr;
+
+    memcpy(&arphdr, &buf[sizeof(struct ether_header)], sizeof(struct arpheader));
     //memcopy
 	 
 	
