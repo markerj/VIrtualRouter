@@ -180,7 +180,7 @@ int main() {
             ethhdrsend->eth_type = htons(0x806);
 
             //send arp reply
-            sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, &recvaddrlen);
+            sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
 
         }
 
@@ -217,7 +217,7 @@ int main() {
             memcpy(ethhdrsend->eth_src, ethhdr->eth_src, 6);
 
             //send ICMP respsonse packet
-            sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, &recvaddrlen);
+            sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
 
         }
 
