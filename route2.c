@@ -12,39 +12,39 @@
 struct arpheader {
     unsigned short hardware;            // Format of hardware address.
     unsigned short protocol;            // Format of protocol address.
-    unsigned char hardware_length;    // Length of hardware address.
-    unsigned char protocol_length;    // Length of protocol address.
-    unsigned short op;                    // ARP opcode (1 == request | 2 == reply).
-    unsigned char src_addr[6];        // Source mac address.
+    unsigned char hardware_length;      // Length of hardware address.
+    unsigned char protocol_length;      // Length of protocol address.
+    unsigned short op;                  // ARP opcode (1 == request | 2 == reply).
+    unsigned char src_addr[6];          // Source mac address.
     unsigned char src_ip[4];            // Source IP address.
-    unsigned char dst_addr[6];        // Destination mac address.
+    unsigned char dst_addr[6];          // Destination mac address.
     unsigned char dst_ip[4];            // Destination IP address.
 };
 
 //eth header
 struct ethheader {
-    unsigned char eth_dst[6];            //ethernet destination
-    unsigned char eth_src[6];            //ethernet source
+    unsigned char eth_dst[6];           //ethernet destination
+    unsigned char eth_src[6];           //ethernet source
     unsigned short eth_type;            //ethernet type (0x806 == ARP | 0x800 == IP)
 };
 
 //icmp header
 struct icmpheader {
-    uint8_t type;                //message type
-    uint8_t code;                //type sub code
-    uint16_t icmp_checksum;        //checksum of icmp
-    uint16_t id;                    //random number
-    uint16_t seq;                //seq #
-    uint32_t data;                //data sent in icmp
+    uint8_t type;                       //message type
+    uint8_t code;                       //type sub code
+    uint16_t icmp_checksum;             //checksum of icmp
+    uint16_t id;                        //random number
+    uint16_t seq;                       //seq #
+    uint32_t data;                      //data sent in icmp
 };
 
 //ip header
 struct ipheader {
     unsigned char src_ip[4];            //source ip
     unsigned char dst_ip[4];            //source destination
-    uint8_t ttl;                //time to live (some default)
-    uint16_t ip_checksum;        //checksum for ip
-    uint16_t id;                    //random number
+    uint8_t ttl;                        //time to live (some default)
+    uint16_t ip_checksum;               //checksum for ip
+    uint16_t id;                        //random number
 };
 
 
