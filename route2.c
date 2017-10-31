@@ -33,7 +33,7 @@ struct ethheader {
 struct icmpheader {
     uint8_t type;                       //message type
     uint8_t code;                       //type sub code
-    uint16_t icmp_checksum;             //checksum of icmp
+    uint16_t checksum;             	//checksum of icmp
     uint16_t id;                        //random number
     uint16_t seq;                       //seq #
     uint32_t data;                      //data sent in icmp
@@ -187,7 +187,7 @@ int main() {
         //if eth_type is of type IP then must be ICMP packet
         else if (ntohs(ethhdr->eth_type) == 0x800))
         {
-            icmphdr = (struct icmphdr *) (buf + sizeof(struct etherheader) + sizeof(struct ipheader));
+            icmphdr = (struct icmphdr *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
 
             //ICMP echo request
             if (icmphdr->type == 8) {
