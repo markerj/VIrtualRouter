@@ -174,7 +174,7 @@ int main() {
 
 
             //fill ethernet header
-            ethhdrsend = (struct ethheader) sendbuf;
+            ethhdrsend = (struct ethheader *) sendbuf;
             memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
             memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
             ethhdrsend->ether_type = htons(0x806);
