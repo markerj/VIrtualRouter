@@ -185,9 +185,9 @@ int main() {
         }
 
         //if eth_type is of type IP then must be ICMP packet
-        else if (ntohs(ethhdr->eth_type) == 0x800))
+        else if (ntohs(ethhdr->eth_type) == 0x800)
         {
-            icmphdr = (struct icmphdr *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
+            icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
 
             //ICMP echo request
             if (icmphdr->type == 8) {
