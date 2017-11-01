@@ -161,7 +161,7 @@ int main() {
         //if eth_type is of type ARP then send ARP reply
         if (ntohs(ethhdr->eth_type) == 0x0806) {
         
-            printf("Got arp request. Sending arp reply..\n");
+            printf("Got arp request\n");
             
             printf("Building arp header\n");
             //fill arp header
