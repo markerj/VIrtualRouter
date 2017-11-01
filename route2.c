@@ -34,7 +34,7 @@ struct ethheader {
 struct icmpheader {
     uint8_t type;                       //message type
     uint8_t code;                       //type sub code
-    uint16_t checksum;             	//checksum of icmp
+    uint16_t checksum;             	    //checksum of icmp
     uint16_t id;                        //random number
     uint16_t seq;                       //seq #
     uint32_t data;                      //data sent in icmp
@@ -42,18 +42,21 @@ struct icmpheader {
 
 //ip header
 struct ipheader {
-    uint8_t ihl:4, version:4;		//ihl version
-    uint8_t tos;			//tos
-    uint16_t tot_len;			//total length
+    uint8_t ihl:4, version:4;		    //ihl version
+    uint8_t tos;			            //tos
+    uint16_t tot_len;			        //total length
     uint16_t id;                        //random number
-    uint16_t frag_off;			//fragmentation offset
+    uint16_t frag_off;			        //fragmentation offset
     uint8_t ttl;                        //time to live (some default)
-    uint8_t protocol;			//protocol
+    uint8_t protocol;			        //protocol
     uint16_t checksum;               	//checksum for ip
     unsigned char src_ip[4];            //source ip
     unsigned char dst_ip[4];            //source destination
     
 };
+
+
+
 
 //in_chksum from Berkely Software Distribution
 uint16_t in_chksum(unsigned char *addr, int len) {
@@ -80,6 +83,9 @@ uint16_t in_chksum(unsigned char *addr, int len) {
     answer = ~sum;    // truncate to 16 bits
     return answer;
 }
+
+
+
 
 
 int main() {
