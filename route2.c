@@ -158,7 +158,7 @@ int main() {
         arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
 
         //if eth_type is of type ARP then send ARP reply
-        if (ntohs(ethhdr->eth_type) == 0x806) {
+        if (ntohs(ethhdr->eth_type) == ETHERTYPE_ARP) {
         
             //fill arp header
             arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
