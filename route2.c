@@ -161,7 +161,8 @@ int main() {
         if (ntohs(ethhdr->eth_type) == 0x0806) {
         
             printf("Got arp request. Sending arp reply..\n");
-        
+            
+            printf("Building arp header\n");
             //fill arp header
             arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
             arphdrsend->hardware = htons(1);
@@ -174,13 +175,14 @@ int main() {
             memcpy(arphdrsend->dst_addr, arphdr->src_addr, 6);
             memcpy(arphdrsend->dst_ip, arphdr->src_ip, 4);
 
-
+            printf("Building ethernet header\n");
             //fill ethernet header
             ethhdrsend = (struct ethheader *) sendbuf;
             memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
             memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
             ethhdrsend->eth_type = htons(0x0806);
 
+            printf("Attempting to send arp reply\n");
             //send arp reply
             //sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
 
@@ -198,24 +200,28 @@ int main() {
                 
                 //copy received packet to send back
                 memcpy(sendbuf, buf, 1500);
-
+                
+                printf("Building ICMP header\n");
                 //fill ICMP header
                 icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) + sizeof(struct ipheader)));
                 icmphdrsend->type = 0;
                 icmphdrsend->checksum = 0;
                 icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
                                               (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
-
+                
+                printf("Building IP header\n");
                 //fill IP header
                 iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
                 memcpy(iphdrsend->src_ip, iphdr->dst_ip, 4);
                 memcpy(iphdrsend->dst_ip, iphdr->src_ip, 4);
 
+                printf("Building ethernet header\n");
                 //fill ethernet header
                 ethhdrsend = (struct ethheader *) sendbuf;
                 memcpy(ethhdrsend->eth_dst, ethhdr->eth_dst, 6);
                 memcpy(ethhdrsend->eth_src, ethhdr->eth_src, 6);
 
+                printf("Attempting to send ICMP response\n");
                 //send ICMP respsonse packet
                 //sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
             }
