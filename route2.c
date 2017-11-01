@@ -35,7 +35,7 @@ struct ethheader {
 struct icmpheader {
     uint8_t type;                       //message type
     uint8_t code;                       //type sub code
-    uint16_t checksum;             	    //checksum of icmp
+    uint16_t checksum;                  //checksum of icmp
     uint16_t id;                        //random number
     uint16_t seq;                       //seq #
     uint32_t data;                      //data sent in icmp
@@ -43,20 +43,18 @@ struct icmpheader {
 
 //ip header
 struct ipheader {
-    uint8_t ihl:4, version:4;		    //ihl version
-    uint8_t tos;			            //tos
-    uint16_t tot_len;			        //total length
+    uint8_t ihl:4, version:4;           //ihl version
+    uint8_t tos;                        //tos
+    uint16_t tot_len;                   //total length
     uint16_t id;                        //random number
-    uint16_t frag_off;			        //fragmentation offset
+    uint16_t frag_off;                  //fragmentation offset
     uint8_t ttl;                        //time to live (some default)
-    uint8_t protocol;			        //protocol
-    uint16_t checksum;               	//checksum for ip
+    uint8_t protocol;                   //protocol
+    uint16_t checksum;                  //checksum for ip
     unsigned char src_ip[4];            //source ip
     unsigned char dst_ip[4];            //source destination
-    
+
 };
-
-
 
 
 //in_chksum from Berkely Software Distribution
@@ -86,16 +84,13 @@ uint16_t in_chksum(unsigned char *addr, int len) {
 }
 
 
-
-
-
 int main() {
     struct ethheader *ethhdr, *ethhdrsend;
     struct arpheader *arphdr, *arphdrsend;
     struct ipheader *iphdr, *iphdrsend;
     struct icmpheader *icmphdr, *icmphdrsend;
     struct sockaddr_ll *getaddress;
-    unsigned char  localadr[6];
+    unsigned char localadr[6];
 
     int packet_socket;
     //get list of interfaces (actually addresses)
@@ -113,15 +108,15 @@ int main() {
         //of our own IP addresses
         if (tmp->ifa_addr->sa_family == AF_PACKET) {
             printf("Interface: %s\n", tmp->ifa_name);
-            
+
             //create a packet socket on interface r?-eth1
             if (!strncmp(&(tmp->ifa_name[3]), "eth1", 4)) {
                 printf("Creating Socket on interface %s\n", tmp->ifa_name);
-                
+
                 //get local mac address
                 getaddress = tmp->ifa_addr;
                 memcpy(localadr, getaddress->sll_addr, 6);
-                
+
                 //create a packet socket
                 //AF_PACKET makes it a packet socket
                 //SOCK_RAW makes it so we get the entire packet
@@ -181,9 +176,9 @@ int main() {
 
         //if eth_type is of type ARP then send ARP reply
         if (ntohs(ethhdr->eth_type) == 0x0806) {
-        
+
             printf("Got arp request\n");
-            
+
             printf("Building arp header\n");
             //fill arp header
             arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
@@ -210,28 +205,27 @@ int main() {
 
         }
 
-        //if eth_type is of type IP then must be ICMP packet
-        else if (ntohs(ethhdr->eth_type) == 0x0800)
-        {
+            //if eth_type is of type IP then must be ICMP packet
+        else if (ntohs(ethhdr->eth_type) == 0x0800) {
             icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
             printf("Received ICMP ECHO\n");
 
             //ICMP echo request
             if (icmphdr->type == 8) {
                 printf("Received ICMP ECHO request\n");
-                
-                
+
+
                 //copy received packet to send back
                 memcpy(sendbuf, buf, 1500);
-                
+
                 printf("Building ICMP header\n");
                 //fill ICMP header
                 icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) + sizeof(struct ipheader)));
                 icmphdrsend->type = 0;
                 icmphdrsend->checksum = 0;
                 icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
-                                              (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
-                
+                                                  (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
+
                 printf("Building IP header\n");
                 //fill IP header
                 iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
