@@ -185,7 +185,7 @@ int main() {
 
             printf("Attempting to send arp reply\n");
             //send arp reply
-            //sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
+            send(packet_socket, sendbuf, 1500, 0);
 
         }
 
@@ -224,7 +224,7 @@ int main() {
 
                 printf("Attempting to send ICMP response\n");
                 //send ICMP respsonse packet
-                //sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
+                send(packet_socket, sendbuf, 1500, 0);
             }
 
 
