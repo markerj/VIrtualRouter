@@ -234,8 +234,8 @@ int main() {
                 printf("Building ethernet header\n");
                 //fill ethernet header
                 ethhdrsend = (struct ethheader *) sendbuf;
-                memcpy(ethhdrsend->eth_dst, ethhdr->eth_dst, 6);
-                memcpy(ethhdrsend->eth_src, ethhdr->eth_src, 6);
+                memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
+                memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
 
                 printf("Attempting to send ICMP response\n");
                 //send ICMP respsonse packet
