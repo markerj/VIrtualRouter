@@ -26,7 +26,7 @@ struct arpheader {
 struct ethheader {
     unsigned char eth_dst[6];           //ethernet destination
     unsigned char eth_src[6];           //ethernet source
-    unsigned short eth_type;            //ethernet type (0x806 == ARP | 0x800 == IP)
+    unsigned short eth_type;            //ethernet type (0x0806 == ARP | 0x0800 == IP)
 };
 
 //icmp header
@@ -182,7 +182,7 @@ int main() {
             ethhdrsend->eth_type = htons(0x0806);
 
             //send arp reply
-            sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
+            //sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
 
         }
 
@@ -217,7 +217,7 @@ int main() {
                 memcpy(ethhdrsend->eth_src, ethhdr->eth_src, 6);
 
                 //send ICMP respsonse packet
-                sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
+                //sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
             }
 
 
