@@ -160,6 +160,8 @@ int main() {
         //if eth_type is of type ARP then send ARP reply
         if (ntohs(ethhdr->eth_type) == 0x0806) {
         
+            printf("Got arp request. Sending arp reply..\n");
+        
             //fill arp header
             arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
             arphdrsend->hardware = htons(1);
@@ -208,8 +210,8 @@ int main() {
 
                 //fill IP header
                 iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
-                memcpy(iphdrsend->src_ip, iphdr->src_ip, 4);
-                memcpy(iphdrsend->dst_ip, iphdr->dst_ip, 4);
+                memcpy(iphdrsend->src_ip, iphdr->dst_ip, 4);
+                memcpy(iphdrsend->dst_ip, iphdr->src_ip, 4);
 
                 //fill ethernet header
                 ethhdrsend = (struct ethheader *) sendbuf;
