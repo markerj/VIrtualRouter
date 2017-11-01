@@ -33,7 +33,7 @@ struct ethheader {
 struct icmpheader {
     uint8_t type;                       //message type
     uint8_t code;                       //type sub code
-    uint16_t checksum;             	//checksum of icmp
+    uint16_t checksum;             	    //checksum of icmp
     uint16_t id;                        //random number
     uint16_t seq;                       //seq #
     uint32_t data;                      //data sent in icmp
@@ -192,32 +192,34 @@ int main() {
             //ICMP echo request
             if (icmphdr->type == 8) {
                 printf("Received ICMP ECHO request from %s (code: %u  id: %u  seq: %u)",
-                       inet_ntoa(*(struct in_addr *) &iphdr->src_ip),
-                       ntohs(icmphdr->code), ntohs(icmphdr->id), ntohs(icmphdr->seq));
-            }
+                inet_ntoa(*(struct in_addr *) &iphdr->src_ip),
+                ntohs(icmphdr->code), ntohs(icmphdr->id), ntohs(icmphdr->seq));
+                
+                
+                //copy received packet to send back
+                memcpy(sendbuf, buf, 1500);
 
-            //copy received packet to send back
-            memcpy(sendbuf, buf, 1500);
-
-            //fill ICMP header
-            icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) + sizeof(struct ipheader)));
-            icmphdrsend->type = 0;
-            icmphdrsend->checksum = 0;
-            icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
+                //fill ICMP header
+                icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) + sizeof(struct ipheader)));
+                icmphdrsend->type = 0;
+                icmphdrsend->checksum = 0;
+                icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
                                               (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
 
-            //fill IP header
-            iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
-            memcpy(iphdrsend->src_ip, iphdr->src_ip, 4);
-            memcpy(iphdrsend->dst_ip, iphdr->dst_ip, 4);
+                //fill IP header
+                iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
+                memcpy(iphdrsend->src_ip, iphdr->src_ip, 4);
+                memcpy(iphdrsend->dst_ip, iphdr->dst_ip, 4);
 
-            //fill ethernet header
-            ethhdrsend = (struct ethheader *) sendbuf;
-            memcpy(ethhdrsend->eth_dst, ethhdr->eth_dst, 6);
-            memcpy(ethhdrsend->eth_src, ethhdr->eth_src, 6);
+                //fill ethernet header
+                ethhdrsend = (struct ethheader *) sendbuf;
+                memcpy(ethhdrsend->eth_dst, ethhdr->eth_dst, 6);
+                memcpy(ethhdrsend->eth_src, ethhdr->eth_src, 6);
 
-            //send ICMP respsonse packet
-            sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
+                //send ICMP respsonse packet
+                sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
+            }
+
 
         }
 
