@@ -158,7 +158,7 @@ int main() {
         arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
 
         //if eth_type is of type ARP then send ARP reply
-        if (ntohs(ethhdr->eth_type) == ETHERTYPE_ARP) {
+        if (ntohs(ethhdr->eth_type) == 0x0806) {
         
             //fill arp header
             arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
@@ -177,7 +177,7 @@ int main() {
             ethhdrsend = (struct ethheader *) sendbuf;
             memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
             memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
-            ethhdrsend->eth_type = htons(0x806);
+            ethhdrsend->eth_type = htons(0x0806);
 
             //send arp reply
             sendto(packet_socket, sendbuf, 1500, 0, (struct sockaddr *) &recvaddr, sizeof(recvaddr));
@@ -185,7 +185,7 @@ int main() {
         }
 
         //if eth_type is of type IP then must be ICMP packet
-        else if (ntohs(ethhdr->eth_type) == 0x800)
+        else if (ntohs(ethhdr->eth_type) == 0x0800)
         {
             icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
 
