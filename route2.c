@@ -151,6 +151,7 @@ int main() {
             continue;
         }
         //start processing all others
+        printf("\n");
         printf("Got a %d byte packet\n", n);
 
         iphdr = (struct ipheader *) (buf + sizeof(struct ethheader));
