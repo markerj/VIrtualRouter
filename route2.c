@@ -200,6 +200,7 @@ int main() {
         else if (ntohs(ethhdr->eth_type) == 0x0800)
         {
             icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
+            printf("Received ICMP ECHO\n");
 
             //ICMP echo request
             if (icmphdr->type == 8) {
