@@ -81,6 +81,8 @@ int main() {
     struct arpheader *arphdr, *arphdrsend;
     struct ipheader *iphdr, *iphdrsend;
     struct icmpheader *icmphdr, *icmphdrsend;
+    struct sockaddr_ll *getaddress;
+    unsigned char  localadr[6];
 
     int packet_socket;
     //get list of interfaces (actually addresses)
@@ -98,6 +100,11 @@ int main() {
         //of our own IP addresses
         if (tmp->ifa_addr->sa_family == AF_PACKET) {
             printf("Interface: %s\n", tmp->ifa_name);
+            
+            //get local mac address
+            getaddress = tmp->ifa_addr;
+            memcpy(localadr, getaddress->sll_addr, 6);
+            
             //create a packet socket on interface r?-eth1
             if (!strncmp(&(tmp->ifa_name[3]), "eth1", 4)) {
                 printf("Creating Socket on interface %s\n", tmp->ifa_name);
@@ -171,7 +178,7 @@ int main() {
             arphdrsend->hardware_length = 6;
             arphdrsend->protocol_length = 4;
             arphdrsend->op = htons(2);
-            memcpy(arphdrsend->src_addr, arphdr->dst_addr, 6);
+            memcpy(arphdrsend->src_addr, localadr, 6);
             memcpy(arphdrsend->src_ip, arphdr->dst_ip, 4);
             memcpy(arphdrsend->dst_addr, arphdr->src_addr, 6);
             memcpy(arphdrsend->dst_ip, arphdr->src_ip, 4);
