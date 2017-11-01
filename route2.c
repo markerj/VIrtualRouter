@@ -192,7 +192,7 @@ int main() {
 
             printf("Attempting to send arp reply\n");
             //send arp reply
-            send(packet_socket, sendbuf, 1500, 0);
+            send(packet_socket, sendbuf, 42, 0);
 
         }
 
@@ -231,7 +231,7 @@ int main() {
 
                 printf("Attempting to send ICMP response\n");
                 //send ICMP respsonse packet
-                send(packet_socket, sendbuf, 1500, 0);
+                send(packet_socket, sendbuf, 98, 0);
             }
 
 
