@@ -3,7 +3,7 @@
 ## How to run (Part 1):
 1.) start mininet on eos
 2.) Login to mininet
-3.) Either clone this directry where you want or switch to directory where you previously cloned.
+3.) Either clone this directory where you want or switch to directory where you previously cloned.
 4.) Pull to make sure it's up to date
 5.) Use ifconfig to obtain mininet IP address
 6.) ssh into this IP in eos terminal by typing "ssh -Y mininet@ipaddressfromstep5"
