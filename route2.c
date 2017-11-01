@@ -193,9 +193,7 @@ int main() {
 
             //ICMP echo request
             if (icmphdr->type == 8) {
-                printf("Received ICMP ECHO request from %s (code: %u  id: %u  seq: %u)",
-                inet_ntoa(*(struct in_addr *) &iphdr->src_ip),
-                ntohs(icmphdr->code), ntohs(icmphdr->id), ntohs(icmphdr->seq));
+                printf("Received ICMP ECHO request\n");
                 
                 
                 //copy received packet to send back
