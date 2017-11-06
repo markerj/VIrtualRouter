@@ -75,7 +75,7 @@ int routerNum = 0;
 
 //indexes 0-3 correspond to r1 interface addresses
 //indexes 4-7 correspond to r2 interface addresses
-//Example: routerAddresses[0] == r1 eth0 ip address | routerAddresses[5] == r2 eth1 ip address
+//Example: routerAddresses[0] == r1 eth0 ip address | routerAddresses[4] == r2 eth0 ip address
 //To calculate correct index based on router number and interface number do...[((routerNum-1)*4) + ethNum]
 //r1 has 3 interfaces: eth0 - eth2
 //r2 has 4 interfaces: eth0 - eth3
