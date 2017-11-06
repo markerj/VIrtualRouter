@@ -413,10 +413,12 @@ int main()
             i++;
         }
         fclose(file);
+        printf("Routing Table Info:");
         printf("%s\n", routerOneRoutingInfo[0]);
         printf("%s\n", routerOneRoutingInfo[1]);
         printf("%s\n", routerOneRoutingInfo[2]);
         printf("%s\n", routerOneRoutingInfo[3]);
+        printf("\n");
     }
     else if(routerNum == 2)
     {
@@ -434,11 +436,13 @@ int main()
             i++;
         }
         fclose(file);
+        printf("Routing Table Info:");
         printf("%s\n", routerTwoRoutingInfo[0]);
         printf("%s\n", routerTwoRoutingInfo[1]);
         printf("%s\n", routerTwoRoutingInfo[2]);
         printf("%s\n", routerTwoRoutingInfo[3]);
         printf("%s\n", routerTwoRoutingInfo[4]);
+        printf("\n");
     }
 
 
