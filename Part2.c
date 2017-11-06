@@ -79,8 +79,8 @@ int routerNum = 0;
 //To calculate correct index based on router number and interface number do...[((routerNum-1)*4) + ethNum]
 //r1 has 3 interfaces: eth0 - eth2
 //r2 has 4 interfaces: eth0 - eth3
-//So if routerNum == 1 and ethNum == 1 the corresponding ipAddress is index is 1
-//So if routerNum == 2 and ethNum == 2 the corresponding ipAddress is index is 6
+//So if routerNum == 1 and ethNum == 1 the corresponding ipAddress is in index 1
+//So if routerNum == 2 and ethNum == 2 the corresponding ipAddress is in index 6
 const char routerAddresses[8][9] =
         {"10.0.0.1", "10.1.0.1", "10.1.1.1", "", "10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"};
 
