@@ -413,16 +413,34 @@ int main()
             i++;
         }
         fclose(file);
+        printf("%s\n", routerOneRoutingInfo[0]);
+        printf("%s\n", routerOneRoutingInfo[1]);
+        printf("%s\n", routerOneRoutingInfo[2]);
+        printf("%s\n", routerOneRoutingInfo[3]);
+    }
+    else if(routerNum == 2)
+    {
+        FILE* file = fopen("r2-table.txt", "r");
+        char line[30] = "";
+        int i = 0;
+        while(!feof(file))
+        {
+            fgets(line, sizeof(line), file);
+            if(line[strlen(line) - 1] == '\n')
+            {
+                line[strlen(line) - 1] = '\0';
+            }
+            strcpy(routerTwoRoutingInfo[i], line);
+            i++;
+        }
+        fclose(file);
+        printf("%s\n", routerTwoRoutingInfo[0]);
+        printf("%s\n", routerTwoRoutingInfo[1]);
+        printf("%s\n", routerTwoRoutingInfo[2]);
+        printf("%s\n", routerTwoRoutingInfo[3]);
+        printf("%s\n", routerTwoRoutingInfo[4]);
     }
 
-    //print routing table info to check valid info
-    int i;
-    int numLines = sizeof(routerOneRoutingInfo)/sizeof(*routerOneRoutingInfo);
-    printf("Num entries in routing table1 = %d\n", numLines);
-    printf("%s\n", routerOneRoutingInfo[0]);
-    printf("%s\n", routerOneRoutingInfo[1]);
-    printf("%s\n", routerOneRoutingInfo[2]);
-    printf("%s\n", routerOneRoutingInfo[3]);
 
     printf("Creating threads for each interface..\n");
 
