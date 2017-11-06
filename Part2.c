@@ -85,8 +85,8 @@ int routerNum = 0;
 const char routerAddresses[8][9] =
         {"10.0.0.1", "10.1.0.1", "10.1.1.1", "", "10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"};
 
-char routerOneRoutingInfo[5][30] = {"", "", "", "", NULL};
-char routerTwoRoutingInfo[6][30] = {"", "", "", "", "", NULL};
+char routerOneRoutingInfo[4][30] = {"", "", "", ""};
+char routerTwoRoutingInfo[5][30] = {"", "", "", "", ""};
 
 
 //##################################################################################################################
@@ -443,8 +443,8 @@ int main()
     }
 
     //print routing table info to check valid info
-    int i = 0;
-    while(routerOneRoutingInfo[i] != NULL)
+    int i;
+    for(i = 0; i < sizeof(routerOneRoutingInfo)/ sizeof(*routerOneRoutingInfo); i++)
     {
         printf("%s\n", routerOneRoutingInfo[i]);
         i++;
