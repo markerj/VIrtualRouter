@@ -332,7 +332,7 @@ void *interfaces(void *args)
 
     printf("From eth%d thread: Ready to receive now\n", ethNum);
     while (exitProgram == 0) {
-        dataToSend = strncmp(bufsToSend[ethNum], "", strlen(bufsToSend[ethNum]));
+        int dataToSend = strncmp(bufsToSend[ethNum], "", strlen(bufsToSend[ethNum]));
         if(dataToSend != 0)
         {
             //forward data from bufsToSend
