@@ -534,6 +534,12 @@ int main()
         printf("%s\n", routerOneRoutingInfo[3]);
         printf("\n");
         tokenizeTable(routerOneRoutingInfo);
+
+        printf("Testing Tokens From Routing Table:\n");
+        printf("%s %s %s", routerOneLine0[0], routerOneLine0[1], routerOneLine0[2]);
+        printf("%s %s %s", routerOneLine1[0], routerOneLine1[1], routerOneLine1[2]);
+        printf("%s %s %s", routerOneLine2[0], routerOneLine2[1], routerOneLine2[2]);
+        printf("%s %s %s", routerOneLine3[0], routerOneLine3[1], routerOneLine3[2]);
     }
     else if(routerNum == 2)
     {
