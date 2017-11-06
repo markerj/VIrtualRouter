@@ -245,6 +245,7 @@ int main()
     printf("Creating threads for each interface..");
 
     int i;
+    int status;
 
     //create interface threads. Create numInterfaces-1 threads because we don't need a thread for lo interface
     for(i = 0; i < numInterfaces-1; i++)
