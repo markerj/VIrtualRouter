@@ -129,7 +129,7 @@ void *interfaces(void *args)
 {
     int ethNum = *((int *)args);
 
-    printf("Created thread for interface eth%d", ethNum);
+    printf("Created thread for interface eth%d\n", ethNum);
 
     struct ethheader *ethhdr, *ethhdrsend;
     struct arpheader *arphdr, *arphdrsend;
@@ -243,7 +243,7 @@ int main()
     }
 
     printf("There are %d total interfaces\n", numInterfaces);
-    printf("Creating threads for each interface..");
+    printf("Creating threads for each interface..\n");
 
     int i;
     int status;
