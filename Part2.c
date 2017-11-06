@@ -413,7 +413,7 @@ int main()
             i++;
         }
         fclose(file);
-        printf("Routing Table Info:");
+        printf("Routing Table Info:\n");
         printf("%s\n", routerOneRoutingInfo[0]);
         printf("%s\n", routerOneRoutingInfo[1]);
         printf("%s\n", routerOneRoutingInfo[2]);
@@ -436,7 +436,7 @@ int main()
             i++;
         }
         fclose(file);
-        printf("Routing Table Info:");
+        printf("Routing Table Info:\n");
         printf("%s\n", routerTwoRoutingInfo[0]);
         printf("%s\n", routerTwoRoutingInfo[1]);
         printf("%s\n", routerTwoRoutingInfo[2]);
