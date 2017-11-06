@@ -409,7 +409,7 @@ int main()
             {
                 line[strlen(line) - 1] = '\0';
             }
-            strcpy(routerOneRoutingInfo[i]);
+            strcpy(routerOneRoutingInfo[i], line);
             i++;
         }
         fclose(file);
