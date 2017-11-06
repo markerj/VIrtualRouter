@@ -340,7 +340,7 @@ int main()
         }
     }
 
-    printf("There are %d total interfaces\n", numInterfaces);
+    //printf("There are %d total interfaces\n", numInterfaces);
     printf("Creating threads for each interface..\n");
 
     int i;
