@@ -162,7 +162,7 @@ int main() {
         FD_ZERO(&readset);
         FD_SET(packet_socket, &readset);
 
-        tv.tv_sec = 1;
+        tv.tv_sec = 5;
         tv.tv_usec = 0;
 
         result = select(packet_socket, &readset, NULL, NULL, &tv);
