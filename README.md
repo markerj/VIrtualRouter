@@ -11,7 +11,7 @@
 8. Run "sudo python prj3-net.py"
 9. Open r1 and h1 terminal using "xterm r1" and "xterm h1"
 10. Compile Part1.c by typing "gcc -o Part1 Part1.c" (in either terminal) (ignore compile error for now)
-11. Inside the r1 terminal run the program by typing ".Part1"
+11. Inside the r1 terminal run the program by typing "./Part1"
 12. You can now ping router1 by typing "ping 10.1.0.1" inside h1 terminal
 13. DONE
 
