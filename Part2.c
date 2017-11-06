@@ -401,21 +401,16 @@ int main()
     {
         FILE* file = fopen("r1-table.txt", "r");
         char line[30] = "";
-        char ch;
         int i = 0;
         while(!feof(file))
         {
-            ch = fgetc(file);
-            if(ch == '\n')
+            fgets(line, sizeof(line), file);
+            if(line[strlen(line) - 1] == '\n')
             {
-                strcpy(routerOneRoutingInfo[i], line);
-                i++;
-                line[0] = '\0';
+                line[strlen(line) - 1] = '\0';
             }
-            else
-            {
-                appendChar(line, ch);
-            }
+            strcpy(routerOneRoutingInfo[i]);
+            i++;
         }
         fclose(file);
     }
@@ -423,21 +418,10 @@ int main()
     {
         FILE* file = fopen("r2-table.txt", "r");
         char line[30] = "";
-        char ch;
         int i = 0;
         while(!feof(file))
         {
-            ch = fgetc(file);
-            if(ch == '\n')
-            {
-                strcpy(routerTwoRoutingInfo[i], line);
-                i++;
-                line[0] = '\0';
-            }
-            else
-            {
-                appendChar(line, ch);
-            }
+
         }
         fclose(file);
     }
