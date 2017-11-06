@@ -71,6 +71,7 @@ int exitProgram = 0;
 int numInterfaces = 0;
 pthread_t tids[10];
 int threadNums[10];
+int routerNum = 0;
 
 
 //#####################################################################################################################
@@ -103,7 +104,15 @@ uint16_t in_chksum(unsigned char *addr, int len) {
     return answer;
 }
 
+char * ipAddressToString(char *inputIP)
+{
+    static char ipString[9];
+    unsigned char *p = inputIP;
+    sprintf(ipString, "%d.%d.%d.%d", p[0], p[1], p[2], p[3]);
+    return(ipString);
 
+
+}
 
 //#####################################################################################################################
 //                                                  Signal Handler                                                    #
@@ -340,7 +349,17 @@ int main()
         }
     }
 
-    //printf("There are %d total interfaces\n", numInterfaces);
+    printf("There are %d total interfaces\n", numInterfaces);
+
+    /*if(numInterfaces == 4)
+    {
+        routerNum = 1;
+    }
+    else if(numInterfaces == 5)
+    {
+        routerNum = 2;
+    }*/
+
     printf("Creating threads for each interface..\n");
 
     int i;
