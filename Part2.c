@@ -88,6 +88,19 @@ const char routerAddresses[8][9] =
 char routerOneRoutingInfo[4][30] = {"", "", "", ""};
 char routerTwoRoutingInfo[5][30] = {"", "", "", "", ""};
 
+char routerOneLine0[3][12] = {"", "", ""};
+char routerOneLine1[3][12] = {"", "", ""};
+char routerOneLine2[3][12] = {"", "", ""};
+char routerOneLine3[3][12] = {"", "", ""};
+
+char routerTwoLine0[3][12] = {"", "", ""};
+char routerTwoLine1[3][12] = {"", "", ""};
+char routerTwoLine2[3][12] = {"", "", ""};
+char routerTwoLine3[3][12] = {"", "", ""};
+char routerTwoLine4[3][12] = {"", "", ""};
+
+char bufsToSend[4][1500] = {"", "", "", ""};
+
 
 //##################################################################################################################
 //                                              Checksum Calculation                                               #
@@ -134,14 +147,99 @@ char * ipAddressToString(char *inputIP)
 }
 
 //##################################################################################################################
-//                                              Append Char to String                                              #
+//                                             Tokenize Routing Table                                              #
 //##################################################################################################################
 
-void appendChar(char* s, char c)
+void tokenizeTable(char *s)
 {
-    int len = strlen(s);
-    s[len] = c;
-    s[len+1] = '\0';
+    if(routerNum == 1)
+    {
+
+        char *token;
+        int i = 0;
+        token = strtok(s[0], ' ');
+        while(token != NULL)
+        {
+            strcpy(routerOneLine0[i], token);
+            token = strtok(NULL, ' ');
+            i++;
+        }
+
+        i = 0;
+        token = strtok(s[1], ' ');
+        while(token != NULL)
+        {
+            strcpy(routerOneLine1[i], token);
+            token = strtok(NULL, ' ');
+            i++;
+        }
+
+        i = 0;
+        token = strtok(s[2], ' ');
+        while(token != NULL)
+        {
+            strcpy(routerOneLine2[i], token);
+            token = strtok(NULL, ' ');
+            i++;
+        }
+
+        i = 0;
+        token = strtok(s[3], ' ');
+        while(token != NULL)
+        {
+            strcpy(routerOneLine3[i], token);
+            token = strtok(NULL, ' ');
+            i++;
+        }
+    }
+    else if(routerNum == 2)
+    {
+        char *token;
+        int i = 0;
+        token = strtok(s[0], ' ');
+        while(token != NULL)
+        {
+            strcpy(routerTwoLine0[i], token);
+            token = strtok(NULL, ' ');
+            i++;
+        }
+
+        i = 0;
+        token = strtok(s[1], ' ');
+        while(token != NULL)
+        {
+            strcpy(routerTwoLine1[i], token);
+            token = strtok(NULL, ' ');
+            i++;
+        }
+
+        i = 0;
+        token = strtok(s[2], ' ');
+        while(token != NULL)
+        {
+            strcpy(routerTwoLine2[i], token);
+            token = strtok(NULL, ' ');
+            i++;
+        }
+
+        i = 0;
+        token = strtok(s[3], ' ');
+        while(token != NULL)
+        {
+            strcpy(routerTwoLine3[i], token);
+            token = strtok(NULL, ' ');
+            i++;
+        }
+
+        i = 0;
+        token = strtok(s[4], ' ');
+        while(token != NULL)
+        {
+            strcpy(routerTwoLine4[i], token);
+            token = strtok(NULL, ' ');
+            i++;
+        }
+    }
 }
 
 //##################################################################################################################
@@ -234,124 +332,136 @@ void *interfaces(void *args)
 
     printf("From eth%d thread: Ready to receive now\n", ethNum);
     while (exitProgram == 0) {
-        char buf[1500], sendbuf[1500];
-        struct sockaddr_ll recvaddr;
-        int recvaddrlen = sizeof(struct sockaddr_ll);
-
-        int result;
-        fd_set readset;
-        struct timeval tv;
-
-        FD_ZERO(&readset);
-        FD_SET(packet_socket, &readset);
-
-        tv.tv_sec = 0;
-        tv.tv_usec = 500000;
-
-        result = select(packet_socket+1, &readset, NULL, NULL, &tv);
-
-        if(result > 0)
+        dataToSend = strncmp(bufsToSend[ethNum], "", strlen(bufsToSend[ethNum]));
+        if(dataToSend != 0)
         {
-            //we can use recv, since the addresses are in the packet, but we
-            //use recvfrom because it gives us an easy way to determine if
-            //this packet is incoming or outgoing (when using ETH_P_ALL, we
-            //see packets in both directions. Only outgoing can be seen when
-            //using a packet socket with some specific protocol)
-            int n = recvfrom(packet_socket, buf, 1500, 0, (struct sockaddr *) &recvaddr, &recvaddrlen);
-            //ignore outgoing packets (we can't disable some from being sent
-            //by the OS automatically, for example ICMP port unreachable
-            //messages, so we will just ignore them here)
-            if (recvaddr.sll_pkttype == PACKET_OUTGOING) {
-                continue;
-            }
-            //start processing all others
-            printf("\n");
-            printf("From eth%d thread: Got a %d byte packet\n", ethNum, n);
+            //forward data from bufsToSend
+        }
+        else
+        {
+            //try to receive packet from socket
+            char buf[1500], sendbuf[1500];
+            struct sockaddr_ll recvaddr;
+            int recvaddrlen = sizeof(struct sockaddr_ll);
 
-            iphdr = (struct ipheader *) (buf + sizeof(struct ethheader));
-            ethhdr = (struct ethheader *) buf;
-            arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
+            int result;
+            fd_set readset;
+            struct timeval tv;
 
-            //if eth_type is of type ARP and router IP address matches correct interface then send ARP reply
-            if (ntohs(ethhdr->eth_type) == 0x0806 &&
+            FD_ZERO(&readset);
+            FD_SET(packet_socket, &readset);
+
+            tv.tv_sec = 0;
+            tv.tv_usec = 500000;
+
+            result = select(packet_socket+1, &readset, NULL, NULL, &tv);
+
+            if(result > 0)
+            {
+                //we can use recv, since the addresses are in the packet, but we
+                //use recvfrom because it gives us an easy way to determine if
+                //this packet is incoming or outgoing (when using ETH_P_ALL, we
+                //see packets in both directions. Only outgoing can be seen when
+                //using a packet socket with some specific protocol)
+                int n = recvfrom(packet_socket, buf, 1500, 0, (struct sockaddr *) &recvaddr, &recvaddrlen);
+                //ignore outgoing packets (we can't disable some from being sent
+                //by the OS automatically, for example ICMP port unreachable
+                //messages, so we will just ignore them here)
+                if (recvaddr.sll_pkttype == PACKET_OUTGOING) {
+                    continue;
+                }
+                //start processing all others
+                printf("\n");
+                printf("From eth%d thread: Got a %d byte packet\n", ethNum, n);
+
+                iphdr = (struct ipheader *) (buf + sizeof(struct ethheader));
+                ethhdr = (struct ethheader *) buf;
+                arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
+
+                //if destination is router itself
+                //if eth_type is of type ARP and router IP address matches correct interface then send ARP reply
+                if (ntohs(ethhdr->eth_type) == 0x0806 &&
                     !strncmp(ipAddressToString(arphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
-            {
+                {
 
-                printf("From eth%d thread: Got arp request\n", ethNum);
+                    printf("From eth%d thread: Got arp request\n", ethNum);
 
-                printf("From eth%d thread: Building arp header\n", ethNum);
-                //fill arp header
-                arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
-                arphdrsend->hardware = htons(1);
-                arphdrsend->protocol = htons(ETH_P_IP);
-                arphdrsend->hardware_length = 6;
-                arphdrsend->protocol_length = 4;
-                arphdrsend->op = htons(2);
-                memcpy(arphdrsend->src_addr, localadr, 6);
-                memcpy(arphdrsend->src_ip, arphdr->dst_ip, 4);
-                memcpy(arphdrsend->dst_addr, arphdr->src_addr, 6);
-                memcpy(arphdrsend->dst_ip, arphdr->src_ip, 4);
-
-                printf("From eth%d thread: Building ethernet header\n", ethNum);
-                //fill ethernet header
-                ethhdrsend = (struct ethheader *) sendbuf;
-                memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
-                memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
-                ethhdrsend->eth_type = htons(0x0806);
-
-                printf("From eth%d thread: Attempting to send arp reply\n", ethNum);
-                //send arp reply
-                send(packet_socket, sendbuf, 42, 0);
-
-            }
-
-                //if eth_type is of type IP and router IP address matches correct interface then must be ICMP packet
-            else if (ntohs(ethhdr->eth_type) == 0x0800 &&
-                    !strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
-            {
-                icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
-                printf("From eth%d thread: Received ICMP ECHO\n", ethNum);
-
-                //ICMP echo request
-                if (icmphdr->type == 8) {
-                    printf("From eth%d thread: Received ICMP ECHO request\n", ethNum);
-
-
-                    //copy received packet to send back
-                    memcpy(sendbuf, buf, 1500);
-
-                    printf("From eth%d thread: Building ICMP header\n", ethNum);
-                    //fill ICMP header
-                    icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) +
-                            sizeof(struct ipheader)));
-                    icmphdrsend->type = 0;
-                    icmphdrsend->checksum = 0;
-                    icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
-                                                      (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
-
-                    printf("From eth%d thread: Building IP header\n", ethNum);
-                    //fill IP header
-                    iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
-                    memcpy(iphdrsend->src_ip, iphdr->dst_ip, 4);
-                    memcpy(iphdrsend->dst_ip, iphdr->src_ip, 4);
+                    printf("From eth%d thread: Building arp header\n", ethNum);
+                    //fill arp header
+                    arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
+                    arphdrsend->hardware = htons(1);
+                    arphdrsend->protocol = htons(ETH_P_IP);
+                    arphdrsend->hardware_length = 6;
+                    arphdrsend->protocol_length = 4;
+                    arphdrsend->op = htons(2);
+                    memcpy(arphdrsend->src_addr, localadr, 6);
+                    memcpy(arphdrsend->src_ip, arphdr->dst_ip, 4);
+                    memcpy(arphdrsend->dst_addr, arphdr->src_addr, 6);
+                    memcpy(arphdrsend->dst_ip, arphdr->src_ip, 4);
 
                     printf("From eth%d thread: Building ethernet header\n", ethNum);
                     //fill ethernet header
                     ethhdrsend = (struct ethheader *) sendbuf;
                     memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
                     memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
+                    ethhdrsend->eth_type = htons(0x0806);
 
-                    printf("From eth%d thread: Attempting to send ICMP response\n", ethNum);
-                    //send ICMP respsonse packet
-                    send(packet_socket, sendbuf, 98, 0);
+                    printf("From eth%d thread: Attempting to send arp reply\n", ethNum);
+                    //send arp reply
+                    send(packet_socket, sendbuf, 42, 0);
+
                 }
 
+                    //if destination is router itself
+                    //if eth_type is of type IP and router IP address matches correct interface then must be ICMP packet
+                else if (ntohs(ethhdr->eth_type) == 0x0800 &&
+                         !strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
+                {
+                    icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
+                    printf("From eth%d thread: Received ICMP ECHO\n", ethNum);
+
+                    //ICMP echo request
+                    if (icmphdr->type == 8) {
+                        printf("From eth%d thread: Received ICMP ECHO request\n", ethNum);
+
+
+                        //copy received packet to send back
+                        memcpy(sendbuf, buf, 1500);
+
+                        printf("From eth%d thread: Building ICMP header\n", ethNum);
+                        //fill ICMP header
+                        icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) +
+                                                              sizeof(struct ipheader)));
+                        icmphdrsend->type = 0;
+                        icmphdrsend->checksum = 0;
+                        icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
+                                                          (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
+
+                        printf("From eth%d thread: Building IP header\n", ethNum);
+                        //fill IP header
+                        iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
+                        memcpy(iphdrsend->src_ip, iphdr->dst_ip, 4);
+                        memcpy(iphdrsend->dst_ip, iphdr->src_ip, 4);
+
+                        printf("From eth%d thread: Building ethernet header\n", ethNum);
+                        //fill ethernet header
+                        ethhdrsend = (struct ethheader *) sendbuf;
+                        memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
+                        memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
+
+                        printf("From eth%d thread: Attempting to send ICMP response\n", ethNum);
+                        //send ICMP respsonse packet
+                        send(packet_socket, sendbuf, 98, 0);
+                    }
+
+
+                }
 
             }
-        }
-        else
-        {
-            //printf("From eth%d thread: Didn't receive anything..\n", ethNum);
+            else
+            {
+                //printf("From eth%d thread: Didn't receive anything..\n", ethNum);
+            }
         }
 
     }
@@ -419,6 +529,7 @@ int main()
         printf("%s\n", routerOneRoutingInfo[2]);
         printf("%s\n", routerOneRoutingInfo[3]);
         printf("\n");
+        tokenizeTable(routerOneRoutingInfo);
     }
     else if(routerNum == 2)
     {
@@ -443,6 +554,7 @@ int main()
         printf("%s\n", routerTwoRoutingInfo[3]);
         printf("%s\n", routerTwoRoutingInfo[4]);
         printf("\n");
+        tokenizeTable(routerTwoRoutingInfo);
     }
 
 
