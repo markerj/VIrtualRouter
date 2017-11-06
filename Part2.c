@@ -447,6 +447,7 @@ int main()
     while(routerOneRoutingInfo[i] != NULL)
     {
         printf("%s\n", routerOneRoutingInfo[i]);
+        i++;
     }
 
     printf("Creating threads for each interface..\n");
