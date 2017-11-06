@@ -25,4 +25,4 @@
 7. Switch to github directory
 8. Run "sudo python prj3-net.py"
 
-You can now ping each router from each of it's respective hosts (r1 - h1,h2 | r2 - h3,h4,h5) simultaneously. This is because mulithreading is implemented which creates a new thread for each socket for each interface when the program is a run on one or both of the routers. Refer to network diagram on project page for IP addresses to ping each router from their respective hosts.
+You can now ping each router from each of it's respective hosts (r1 - h1,h2 | r2 - h3,h4,h5) simultaneously. This is because mulithreading is implemented which creates a new thread for each socket for each interface when the program is run on one or both of the routers. Refer to network diagram on project page for IP addresses to ping each router from their respective hosts.
