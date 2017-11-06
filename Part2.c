@@ -150,7 +150,7 @@ char * ipAddressToString(char *inputIP)
 //                                             Tokenize Routing Table                                              #
 //##################################################################################################################
 
-void tokenizeTable(char *s)
+void tokenizeTable(char *s[30])
 {
     if(routerNum == 1)
     {
