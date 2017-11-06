@@ -386,6 +386,7 @@ int main()
     if(routerNum == 1)
     {
         FILE* file = fopen("r1-table.txt", "r");
+        char line[30];
         while(!feof(file))
         {
             fgets(line, sizeof(line), file);
