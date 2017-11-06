@@ -254,7 +254,7 @@ int main()
         threadNums[i] = i;
         if((status = pthread_create(&tids[i], NULL, interfaces, &threadNums[i])) != 0)
         {
-            fprintf(stderr, "thread create error %d: %s", status, sterror(status));
+            fprintf(stderr, "thread create error %d: %s", status, strerror(status));
         }
         openthreads++;
     }
