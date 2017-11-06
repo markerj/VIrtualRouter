@@ -256,7 +256,7 @@ void *interfaces(void *args)
 
             //if eth_type is of type ARP then send ARP reply
             if (ntohs(ethhdr->eth_type) == 0x0806 &&
-                    !strncmp(ipAddressToString(arphdr->dst_ip), routerAddresses[((routerNum-1)*3) + ethNum], 9))
+                    !strncmp(ipAddressToString(arphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
             {
 
                 printf("From eth%d thread: Got arp request\n", ethNum);
@@ -289,7 +289,7 @@ void *interfaces(void *args)
 
                 //if eth_type is of type IP then must be ICMP packet
             else if (ntohs(ethhdr->eth_type) == 0x0800 &&
-                    !strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[ethNum], 9))
+                    !strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
             {
                 icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
                 printf("From eth%d thread: Received ICMP ECHO\n", ethNum);
