@@ -424,6 +424,10 @@ int main()
         printf("%s\n", routerOneRoutingInfo[i]);
         i++;
     }
+    printf("%s\n", routerOneRoutingInfo[0]);
+    printf("%s\n", routerOneRoutingInfo[1]);
+    printf("%s\n", routerOneRoutingInfo[2]);
+    printf("%s\n", routerOneRoutingInfo[3]);
 
     printf("Creating threads for each interface..\n");
 
