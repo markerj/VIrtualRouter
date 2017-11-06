@@ -70,6 +70,7 @@ int openthreads = 0;
 int exitProgram = 0;
 int numInterfaces = 0;
 pthread_t tids[10];
+int threadNums[10];
 
 
 //#####################################################################################################################
@@ -250,7 +251,8 @@ int main()
     //create interface threads. Create numInterfaces-1 threads because we don't need a thread for lo interface
     for(i = 0; i < numInterfaces-1; i++)
     {
-        if((status = pthread_create(&tids[i], NULL, interfaces, i)) != 0)
+        threadNums[i] = i;
+        if((status = pthread_create(&tids[i], NULL, interfaces, &threadNums[i])) != 0)
         {
             fprintf(stderr, "thread create error %d: %s", status, sterror(status));
         }
