@@ -78,7 +78,7 @@ int routerNum = 0;
 //Example: routerAddresses[0][1] == r1 ipAdress on eth1
 //Example: routerAddresses[1][2] == r2 ipAdress on eth2
 char routerAddresses[2][4] = {
-        {"10.0.0.1", "10.1.0.1", "10.1.1.1", ""}.
+        {"10.0.0.1", "10.1.0.1", "10.1.1.1", ""},
         {"10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"}
 };
 
