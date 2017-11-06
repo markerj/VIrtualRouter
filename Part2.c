@@ -418,7 +418,7 @@ int main()
     //print routing table info to check valid info
     int i;
     int numLines = sizeof(routerOneRoutingInfo)/sizeof(*routerOneRoutingInfo);
-    printf("Num entries in routing table1 = %d", numLines);
+    printf("Num entries in routing table1 = %d\n", numLines);
     for(i = 0; i < numLines; i++)
     {
         printf("%s\n", routerOneRoutingInfo[i]);
