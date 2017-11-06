@@ -112,6 +112,7 @@ uint16_t in_chksum(unsigned char *addr, int len) {
 void exitprog(int sig)
 {
     exitProgram = 1;
+    printf(" received\n");
     printf("Waiting for all threads to close..\n");
 }
 
@@ -362,7 +363,7 @@ int main()
         pthread_join(tids[i], NULL);
     }
 
-    printf("All threads closed!");
+    printf("All threads closed!\n");
     printf("Shutting down. Goodbye!\n");
 
     return 0;
