@@ -306,7 +306,7 @@ void *interfaces(void *args)
         }
         else
         {
-            printf("From eth%d thread: Didn't receive anything..", ethNum);
+            //printf("From eth%d thread: Didn't receive anything..\n", ethNum);
         }
 
     }
