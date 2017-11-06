@@ -11,6 +11,7 @@
 #include <linux/ip.h>
 #include <pthread.h>
 #include <signal.h>
+#include <errno.h>
 
 //#####################################################################################################################
 //                                                Packet header structs                                               #
@@ -68,6 +69,7 @@ struct ipheader {
 int openthreads = 0;
 int exitProgram = 0;
 int numInterfaces = 0;
+pthread_t tids[10];
 
 
 //#####################################################################################################################
@@ -124,6 +126,10 @@ void exitprog(int sig)
 
 void *interfaces(void *args)
 {
+    int ethNum = args;
+
+    printf("Created thread for interface eth%d", ethNum);
+
     struct ethheader *ethhdr, *ethhdrsend;
     struct arpheader *arphdr, *arphdrsend;
     struct ipheader *iphdr, *iphdrsend;
@@ -136,7 +142,6 @@ void *interfaces(void *args)
     struct ifaddrs *ifaddr, *tmp;
     if (getifaddrs(&ifaddr) == -1) {
         perror("getifaddrs");
-        return 1;
     }
     //have the list, loop over the list
     for (tmp = ifaddr; tmp != NULL; tmp = tmp->ifa_next) {
@@ -146,11 +151,11 @@ void *interfaces(void *args)
         //use the AF_INET addresses in this list for example to get a list
         //of our own IP addresses
         if (tmp->ifa_addr->sa_family == AF_PACKET) {
-            printf("Interface: %s\n", tmp->ifa_name);
+            //printf("Interface: %s\n", tmp->ifa_name);
 
             //create a packet socket on interface r?-eth1
             if (!strncmp(&(tmp->ifa_name[3]), "eth1", 4)) {
-                printf("Creating Socket on interface %s\n", tmp->ifa_name);
+                printf("From thread %d: Creating Socket on interface %s\n",ethNum, tmp->ifa_name);
 
                 //get local mac address
                 getaddress = tmp->ifa_addr;
@@ -165,7 +170,6 @@ void *interfaces(void *args)
                 packet_socket = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
                 if (packet_socket < 0) {
                     perror("socket");
-                    return 2;
                 }
                 //Bind the socket to the address, so we only get packets
                 //recieved on this specific interface. For packet sockets, the
@@ -188,6 +192,7 @@ void *interfaces(void *args)
     //a good way is to have one socket per interface and use select to
     //see which ones have data)
 
+/*
     printf("Ready to recieve now\n");
     while (1) {
         char buf[1500], sendbuf[1500];
@@ -210,8 +215,7 @@ void *interfaces(void *args)
         printf("Got a %d byte packet\n", n);
 
     }
-    //exit
-    return 0;
+*/
 }
 
 
@@ -222,6 +226,7 @@ void *interfaces(void *args)
 
 int main()
 {
+    //Find out how many interface threads to create
     struct ifaddrs *ifaddr, *tmp;
     if (getifaddrs(&ifaddr) == -1) {
         perror("getifaddrs");
@@ -236,5 +241,24 @@ int main()
         }
     }
 
-    printf("There are %d total interfaces", numInterfaces);
+    printf("There are %d total interfaces\n", numInterfaces);
+    printf("Creating threads for each interface..");
+
+    //create interface threads. Create numInterfaces-1 threads because we don't need a thread for lo interface
+    for(int i = 0; i < numInterfaces-1; i++)
+    {
+        if((status = pthread_create(&tids[i], NULL, interfaces, i)) != 0)
+        {
+            fprintf(stderr, "thread create error %d: %s", status, sterror(status));
+        }
+        openthreads++;
+    }
+
+    //waits for threads to exit
+    for(int i = 0; i < numInterfaces-1; i++)
+    {
+        pthread_join(tids[i], NULL);
+    }
+
+    return 0;
 }
