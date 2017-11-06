@@ -191,6 +191,8 @@ void tokenizeTable(char s[5][30])
             token = strtok(NULL, ' ');
             i++;
         }
+
+        printf("Stored tokens for Router1\n");
     }
     else if(routerNum == 2)
     {
