@@ -126,7 +126,7 @@ void exitprog(int sig)
 
 void *interfaces(void *args)
 {
-    int ethNum = args;
+    int ethNum = *args;
 
     printf("Created thread for interface eth%d", ethNum);
 
