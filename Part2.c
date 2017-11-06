@@ -73,14 +73,10 @@ pthread_t tids[10];
 int threadNums[10];
 int routerNum = 0;
 
-//Row corresponds to router number and column corresponds to interface num. Value is router ip on each interface
-//This is used to make sure router only arp responds to correct interfaces.
-//Example: routerAddresses[0][1] == r1 ipAdress on eth1
-//Example: routerAddresses[1][2] == r2 ipAdress on eth2
-char routerAddresses[2][4] = {
-        {"10.0.0.1", "10.1.0.1", "10.1.1.1", ""},
-        {"10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"}
-};
+//index of each array corresponds to router IP address on each interface
+//Example routerOneAddresses[0] == r1 address on eth0
+const char routerOneAddresses[3] = {"10.0.0.1", "10.1.0.1", "10.1.1.1"};
+const char routerTwoAddresses[4] = {"10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"};
 
 
 //#####################################################################################################################
@@ -215,7 +211,7 @@ void *interfaces(void *args)
     //see which ones have data)
 
 
-    printf("From eth%d thread: Ready to recieve now\n", ethNum);
+    printf("From eth%d thread: Ready to receive now\n", ethNum);
     while (exitProgram == 0) {
         char buf[1500], sendbuf[1500];
         struct sockaddr_ll recvaddr;
@@ -256,7 +252,11 @@ void *interfaces(void *args)
             arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
 
             //if eth_type is of type ARP then send ARP reply
-            if (ntohs(ethhdr->eth_type) == 0x0806 && strncmp(ipAddressToString(arphdr->dst_ip), routerAddresses[routerNum-1][ethNum], 9)) {
+            if (ntohs(ethhdr->eth_type) == 0x0806 &&
+                    (strncmp(ipAddressToString(arphdr->dst_ip), routerOneAddresses[ethNum], 9) ||
+                            strncmp(ipAddressToString(arphdr->dst_ip), routerTwoAddresses[ethNum], 9))
+                    )
+            {
 
                 printf("From eth%d thread: Got arp request\n", ethNum);
 
@@ -287,7 +287,11 @@ void *interfaces(void *args)
             }
 
                 //if eth_type is of type IP then must be ICMP packet
-            else if (ntohs(ethhdr->eth_type) == 0x0800 && strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[routerNum-1][ethNum], 9)) {
+            else if (ntohs(ethhdr->eth_type) == 0x0800 &&
+                    (strncmp(ipAddressToString(iphdr->dst_ip), routerOneAddresses[ethNum], 9) ||
+                     strncmp(ipAddressToString(iphdr->dst_ip), routerTwoAddresses[ethNum], 9))
+                    )
+            {
                 icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
                 printf("From eth%d thread: Received ICMP ECHO\n", ethNum);
 
