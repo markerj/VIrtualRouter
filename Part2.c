@@ -248,7 +248,7 @@ void tokenizeTable(char s[5][30])
 }
 
 //##################################################################################################################
-//                                        ignal Handler (To exit on Ctrl-C)                                        #
+//                                        Signal Handler (To exit on Ctrl-C)                                        #
 //##################################################################################################################
 
 void exitprog(int sig)
@@ -460,6 +460,201 @@ void *interfaces(void *args)
                     }
 
 
+                }
+
+                //add data to forward array
+                else if(routerNum == 1)
+                {
+                    //router 1 forward data
+                    if (ntohs(ethhdr->eth_type) == 0x0806)
+                    {
+                        char dstSubStr16 [5];
+                        char dstSubStr24 [7];
+                        memcpy(dstSubStr16, ipAddressToString(arphdr->dst_ip), 4);
+                        subStr16[4] = '\0';
+                        memcpy(dstSubStr24, ipAddressToString(arphdr->dst_ip), 6);
+                        subStr24[6] = '\0';
+
+                        char line0SubStr[5];
+                        memcpy(line0SubStr, routerOneLine0[0], 4);
+                        line0SubStr[4] = '\0';
+
+                        char line1SubStr[7];
+                        memcpy(line1SubStr, routerOneLine1[0], 6);
+                        line1SubStr[6] = '\0';
+
+                        char line2SubStr[7];
+                        memcpy(line2SubStr, routerOneLine2[0], 6);
+                        line2SubStr[6] = '\0';
+
+                        char line3SubStr[5];
+                        memcpy(line3SubStr, routerOneLine3[0], 4);
+                        line3SubStr[4] = '\0';
+
+                        if(strncmp(dstSubStr16, line0SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line1SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line2SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr16, line3SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                    }
+                    else if (ntohs(ethhdr->eth_type) == 0x0800)
+                    {
+                        char dstSubStr16 [5];
+                        char dstSubStr24 [7];
+                        memcpy(dstSubStr16, ipAddressToString(iphdr->dst_ip), 4);
+                        subStr16[4] = '\0';
+                        memcpy(dstSubStr24, ipAddressToString(iphdr->dst_ip), 6);
+                        subStr24[6] = '\0';
+
+                        char line0SubStr[5];
+                        memcpy(line0SubStr, routerOneLine0[0], 4);
+                        line0SubStr[4] = '\0';
+
+                        char line1SubStr[7];
+                        memcpy(line1SubStr, routerOneLine1[0], 6);
+                        line1SubStr[6] = '\0';
+
+                        char line2SubStr[7];
+                        memcpy(line2SubStr, routerOneLine2[0], 6);
+                        line2SubStr[6] = '\0';
+
+                        char line3SubStr[5];
+                        memcpy(line3SubStr, routerOneLine3[0], 4);
+                        line3SubStr[4] = '\0';
+
+                        if(strncmp(dstSubStr16, line0SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line1SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line2SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr16, line3SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                    }
+
+                }
+                else if(routerNum == 2)
+                {
+                    //router 2 forward data
+                    if (ntohs(ethhdr->eth_type) == 0x0806)
+                    {
+                        char dstSubStr16 [5];
+                        char dstSubStr24 [7];
+                        memcpy(dstSubStr16, ipAddressToString(arphdr->dst_ip), 4);
+                        subStr16[4] = '\0';
+                        memcpy(dstSubStr24, ipAddressToString(arphdr->dst_ip), 6);
+                        subStr24[6] = '\0';
+
+                        char line0SubStr[5];
+                        memcpy(line0SubStr, routerTwoLine0[0], 4);
+                        line0SubStr[4] = '\0';
+
+                        char line1SubStr[7];
+                        memcpy(line1SubStr, routerTwoLine1[0], 6);
+                        line1SubStr[6] = '\0';
+
+                        char line2SubStr[7];
+                        memcpy(line2SubStr, routerTwoLine2[0], 6);
+                        line2SubStr[6] = '\0';
+
+                        char line3SubStr[7];
+                        memcpy(line3SubStr, routerTwoLine3[0], 6);
+                        line3SubStr[6] = '\0';
+
+                        char line4SubStr[5];
+                        memcpy(line4SubStr, routerTwoLine4[0], 4);
+                        line4SubStr[4] = '\0';
+
+                        if(strncmp(dstSubStr16, line0SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line1SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line2SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line3SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr16, line4SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                    }
+                    else if (ntohs(ethhdr->eth_type) == 0x0800)
+                    {
+                        char dstSubStr16 [5];
+                        char dstSubStr24 [7];
+                        memcpy(dstSubStr16, ipAddressToString(iphdr->dst_ip), 4);
+                        subStr16[4] = '\0';
+                        memcpy(dstSubStr24, ipAddressToString(iphdr->dst_ip), 6);
+                        subStr24[6] = '\0';
+
+                        char line0SubStr[5];
+                        memcpy(line0SubStr, routerTwoLine0[0], 4);
+                        line0SubStr[4] = '\0';
+
+                        char line1SubStr[7];
+                        memcpy(line1SubStr, routerTwoLine1[0], 6);
+                        line1SubStr[6] = '\0';
+
+                        char line2SubStr[7];
+                        memcpy(line2SubStr, routerTwoLine2[0], 6);
+                        line2SubStr[6] = '\0';
+
+                        char line3SubStr[7];
+                        memcpy(line3SubStr, routerTwoLine3[0], 6);
+                        line3SubStr[6] = '\0';
+
+                        char line4SubStr[5];
+                        memcpy(line4SubStr, routerTwoLine4[0], 4);
+                        line4SubStr[4] = '\0';
+
+                        if(strncmp(dstSubStr16, line0SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line1SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line2SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr24, line3SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else if(strncmp(dstSubStr16, line4SubStr) == 0)
+                        {
+                            //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                    }
                 }
 
             }
