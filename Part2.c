@@ -85,8 +85,8 @@ int routerNum = 0;
 const char routerAddresses[8][9] =
         {"10.0.0.1", "10.1.0.1", "10.1.1.1", "", "10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"};
 
-char routerOneRoutingInfo[5][30] = {"", "", "", "", NULL};
-char routerTwoRoutingInfo[6][30] = {"", "", "", "", "", NULL};
+char routerOneRoutingInfo[4][30] = {"", "", "", "", NULL};
+char routerTwoRoutingInfo[5][30] = {"", "", "", "", "", NULL};
 
 
 //##################################################################################################################
@@ -430,7 +430,7 @@ int main()
             ch = fgetc(file);
             if(ch == '\n')
             {
-                strcpy(routerOneRoutingInfo[i], line);
+                strcpy(routerTwoRoutingInfo[i], line);
                 i++;
                 line[0] = '\0';
             }
