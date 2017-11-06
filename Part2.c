@@ -390,7 +390,7 @@ int main()
         while(!feof(file))
         {
             fgets(line, sizeof(line), file);
-            printf(line);
+            printf("%s", line);
         }
         fclose(file);
     }
@@ -401,7 +401,7 @@ int main()
         while(!feof(file))
         {
             fgets(line, sizeof(line), file);
-            printf(line);
+            printf("%s", line);
         }
         fclose(file);
     }
