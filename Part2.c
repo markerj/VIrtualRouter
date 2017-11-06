@@ -382,6 +382,29 @@ int main()
         routerNum = 2;
     }
 
+    //Read in correct routing table info
+    if(routerNum == 1)
+    {
+        FILE* file = fopen("r1-table.txt", "r");
+        while(!feof(file))
+        {
+            fgets(line, sizeof(line), file);
+            printf(line);
+        }
+        fclose(file);
+    }
+    else if(routerNum == 2)
+    {
+        FILE* file = fopen("r2-table.txt", "r");
+        char line[30];
+        while(!feof(file))
+        {
+            fgets(line, sizeof(line), file);
+            printf(line);
+        }
+        fclose(file);
+    }
+
     printf("Creating threads for each interface..\n");
 
     int i;
