@@ -206,6 +206,7 @@ void *interfaces(void *args)
         //this packet is incoming or outgoing (when using ETH_P_ALL, we
         //see packets in both directions. Only outgoing can be seen when
         //using a packet socket with some specific protocol)
+
         int n = recvfrom(packet_socket, buf, 1500, 0, (struct sockaddr *) &recvaddr, &recvaddrlen);
         //ignore outgoing packets (we can't disable some from being sent
         //by the OS automatically, for example ICMP port unreachable

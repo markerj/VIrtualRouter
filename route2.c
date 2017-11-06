@@ -154,96 +154,116 @@ int main() {
         char buf[1500], sendbuf[1500];
         struct sockaddr_ll recvaddr;
         int recvaddrlen = sizeof(struct sockaddr_ll);
-        //we can use recv, since the addresses are in the packet, but we
-        //use recvfrom because it gives us an easy way to determine if
-        //this packet is incoming or outgoing (when using ETH_P_ALL, we
-        //see packets in both directions. Only outgoing can be seen when
-        //using a packet socket with some specific protocol)
-        int n = recvfrom(packet_socket, buf, 1500, 0, (struct sockaddr *) &recvaddr, &recvaddrlen);
-        //ignore outgoing packets (we can't disable some from being sent
-        //by the OS automatically, for example ICMP port unreachable
-        //messages, so we will just ignore them here)
-        if (recvaddr.sll_pkttype == PACKET_OUTGOING) {
-            continue;
-        }
-        //start processing all others
-        printf("\n");
-        printf("Got a %d byte packet\n", n);
 
-        iphdr = (struct ipheader *) (buf + sizeof(struct ethheader));
-        ethhdr = (struct ethheader *) buf;
-        arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
+        int result;
+        fd_set readset;
+        struct timeval tv;
 
-        //if eth_type is of type ARP then send ARP reply
-        if (ntohs(ethhdr->eth_type) == 0x0806) {
+        FD_ZERO(&readset);
+        FD_SET(packet_socket, &readset);
 
-            printf("Got arp request\n");
+        tv.tv_sec = 1;
+        tv.tv_usec = 0;
 
-            printf("Building arp header\n");
-            //fill arp header
-            arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
-            arphdrsend->hardware = htons(1);
-            arphdrsend->protocol = htons(ETH_P_IP);
-            arphdrsend->hardware_length = 6;
-            arphdrsend->protocol_length = 4;
-            arphdrsend->op = htons(2);
-            memcpy(arphdrsend->src_addr, localadr, 6);
-            memcpy(arphdrsend->src_ip, arphdr->dst_ip, 4);
-            memcpy(arphdrsend->dst_addr, arphdr->src_addr, 6);
-            memcpy(arphdrsend->dst_ip, arphdr->src_ip, 4);
+        result = select(packet_socket, &readset, NULL, NULL, &tv);
 
-            printf("Building ethernet header\n");
-            //fill ethernet header
-            ethhdrsend = (struct ethheader *) sendbuf;
-            memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
-            memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
-            ethhdrsend->eth_type = htons(0x0806);
+        if(result > 0)
+        {
+            //we can use recv, since the addresses are in the packet, but we
+            //use recvfrom because it gives us an easy way to determine if
+            //this packet is incoming or outgoing (when using ETH_P_ALL, we
+            //see packets in both directions. Only outgoing can be seen when
+            //using a packet socket with some specific protocol)
+            int n = recvfrom(packet_socket, buf, 1500, 0, (struct sockaddr *) &recvaddr, &recvaddrlen);
+            //ignore outgoing packets (we can't disable some from being sent
+            //by the OS automatically, for example ICMP port unreachable
+            //messages, so we will just ignore them here)
+            if (recvaddr.sll_pkttype == PACKET_OUTGOING) {
+                continue;
+            }
+            //start processing all others
+            printf("\n");
+            printf("Got a %d byte packet\n", n);
 
-            printf("Attempting to send arp reply\n");
-            //send arp reply
-            send(packet_socket, sendbuf, 42, 0);
+            iphdr = (struct ipheader *) (buf + sizeof(struct ethheader));
+            ethhdr = (struct ethheader *) buf;
+            arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
 
-        }
+            //if eth_type is of type ARP then send ARP reply
+            if (ntohs(ethhdr->eth_type) == 0x0806) {
 
-            //if eth_type is of type IP then must be ICMP packet
-        else if (ntohs(ethhdr->eth_type) == 0x0800) {
-            icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
-            printf("Received ICMP ECHO\n");
+                printf("Got arp request\n");
 
-            //ICMP echo request
-            if (icmphdr->type == 8) {
-                printf("Received ICMP ECHO request\n");
-
-
-                //copy received packet to send back
-                memcpy(sendbuf, buf, 1500);
-
-                printf("Building ICMP header\n");
-                //fill ICMP header
-                icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) + sizeof(struct ipheader)));
-                icmphdrsend->type = 0;
-                icmphdrsend->checksum = 0;
-                icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
-                                                  (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
-
-                printf("Building IP header\n");
-                //fill IP header
-                iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
-                memcpy(iphdrsend->src_ip, iphdr->dst_ip, 4);
-                memcpy(iphdrsend->dst_ip, iphdr->src_ip, 4);
+                printf("Building arp header\n");
+                //fill arp header
+                arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
+                arphdrsend->hardware = htons(1);
+                arphdrsend->protocol = htons(ETH_P_IP);
+                arphdrsend->hardware_length = 6;
+                arphdrsend->protocol_length = 4;
+                arphdrsend->op = htons(2);
+                memcpy(arphdrsend->src_addr, localadr, 6);
+                memcpy(arphdrsend->src_ip, arphdr->dst_ip, 4);
+                memcpy(arphdrsend->dst_addr, arphdr->src_addr, 6);
+                memcpy(arphdrsend->dst_ip, arphdr->src_ip, 4);
 
                 printf("Building ethernet header\n");
                 //fill ethernet header
                 ethhdrsend = (struct ethheader *) sendbuf;
                 memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
                 memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
+                ethhdrsend->eth_type = htons(0x0806);
 
-                printf("Attempting to send ICMP response\n");
-                //send ICMP respsonse packet
-                send(packet_socket, sendbuf, 98, 0);
+                printf("Attempting to send arp reply\n");
+                //send arp reply
+                send(packet_socket, sendbuf, 42, 0);
+
             }
 
+                //if eth_type is of type IP then must be ICMP packet
+            else if (ntohs(ethhdr->eth_type) == 0x0800) {
+                icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
+                printf("Received ICMP ECHO\n");
 
+                //ICMP echo request
+                if (icmphdr->type == 8) {
+                    printf("Received ICMP ECHO request\n");
+
+
+                    //copy received packet to send back
+                    memcpy(sendbuf, buf, 1500);
+
+                    printf("Building ICMP header\n");
+                    //fill ICMP header
+                    icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) + sizeof(struct ipheader)));
+                    icmphdrsend->type = 0;
+                    icmphdrsend->checksum = 0;
+                    icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
+                                                      (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
+
+                    printf("Building IP header\n");
+                    //fill IP header
+                    iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
+                    memcpy(iphdrsend->src_ip, iphdr->dst_ip, 4);
+                    memcpy(iphdrsend->dst_ip, iphdr->src_ip, 4);
+
+                    printf("Building ethernet header\n");
+                    //fill ethernet header
+                    ethhdrsend = (struct ethheader *) sendbuf;
+                    memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
+                    memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
+
+                    printf("Attempting to send ICMP response\n");
+                    //send ICMP respsonse packet
+                    send(packet_socket, sendbuf, 98, 0);
+                }
+
+
+            }
+        }
+        else
+        {
+            printf("Didn't receive anything..\n");
         }
 
     }
