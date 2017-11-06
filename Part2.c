@@ -243,6 +243,7 @@ void tokenizeTable(char s[5][30])
             token = strtok(NULL, d);
             i++;
         }
+        printf("Stored tokens for Router2\n");
     }
 }
 
@@ -566,6 +567,14 @@ int main()
         printf("%s\n", routerTwoRoutingInfo[4]);
         printf("\n");
         tokenizeTable(routerTwoRoutingInfo);
+
+        printf("Testing Tokens From Routing Table:\n");
+        printf("%s %s %s\n", routerTwoLine0[0], routerTwoLine0[1], routerTwoLine0[2]);
+        printf("%s %s %s\n", routerTwoLine1[0], routerTwoLine1[1], routerTwoLine1[2]);
+        printf("%s %s %s\n", routerTwoLine2[0], routerTwoLine2[1], routerTwoLine2[2]);
+        printf("%s %s %s\n", routerTwoLine3[0], routerTwoLine3[1], routerTwoLine3[2]);
+        printf("%s %s %s\n", routerTwoLine4[0], routerTwoLine4[1], routerTwoLine4[2]);
+        printf("\n");
     }
 
 
