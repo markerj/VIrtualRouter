@@ -198,6 +198,7 @@ void tokenizeTable(char s[5][30])
     else if(routerNum == 2)
     {
         char *token;
+        const char d[2] = " ";
         int i = 0;
         token = strtok(s[0], d);
         while(token != NULL)
