@@ -73,8 +73,14 @@ pthread_t tids[10];
 int threadNums[10];
 int routerNum = 0;
 
-//index of each array corresponds to router IP address on each interface
-//Example routerOneAddresses[0] == r1 address on eth0
+//indexes 0-3 correspond to r1 interface addresses
+//indexes 4-7 correspond to r2 interface addresses
+//Example: routerAddresses[0] == r1 eth0 ip address | routerAddresses[5] == r2 eth1 ip address
+//To calculate correct index based on router number and interface number do...[((routerNum-1)*4) + ethNum]
+//r1 has 3 interfaces: eth0 - eth2
+//r2 has 4 interfaces: eth0 - eth3
+//So if routerNum == 1 and ethNum == 1 the corresponding ipAddress is index is 1
+//So if routerNum == 2 and ethNum == 2 the corresponding ipAddress is index is 6
 const char routerAddresses[8][9] =
         {"10.0.0.1", "10.1.0.1", "10.1.1.1", "", "10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"};
 
@@ -124,7 +130,7 @@ char * ipAddressToString(char *inputIP)
 }
 
 //#####################################################################################################################
-//                                                  Signal Handler                                                    #
+//                                        ignal Handler (To exit on Ctrl-C)                                           #
 //#####################################################################################################################
 
 void exitprog(int sig)
@@ -251,10 +257,7 @@ void *interfaces(void *args)
             ethhdr = (struct ethheader *) buf;
             arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
 
-            printf("From eth%d thread: Destination address is %s\n", ethNum, ipAddressToString(arphdr->dst_ip));
-            printf("From eth%d thread: Equivalent address from array is %s\n", ethNum, routerAddresses[((routerNum-1)*4) + ethNum]);
-
-            //if eth_type is of type ARP then send ARP reply
+            //if eth_type is of type ARP and router IP address matches correct interface then send ARP reply
             if (ntohs(ethhdr->eth_type) == 0x0806 &&
                     !strncmp(ipAddressToString(arphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
             {
@@ -287,7 +290,7 @@ void *interfaces(void *args)
 
             }
 
-                //if eth_type is of type IP then must be ICMP packet
+                //if eth_type is of type IP and router IP address matches correct interface then must be ICMP packet
             else if (ntohs(ethhdr->eth_type) == 0x0800 &&
                     !strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
             {
