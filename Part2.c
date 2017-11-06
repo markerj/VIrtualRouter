@@ -85,6 +85,9 @@ int routerNum = 0;
 const char routerAddresses[8][9] =
         {"10.0.0.1", "10.1.0.1", "10.1.1.1", "", "10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"};
 
+char routerOneRoutingInfo[4][30] = {"", "", "", "", NULL};
+char routerTwoRoutingInfo[5][30] = {"", "", "", "", "", NULL};
+
 
 //##################################################################################################################
 //                                              Checksum Calculation                                               #
@@ -128,6 +131,17 @@ char * ipAddressToString(char *inputIP)
     return(ipString);
 
 
+}
+
+//##################################################################################################################
+//                                              Append Char to String                                              #
+//##################################################################################################################
+
+void appendChar(char* s, char c)
+{
+    int len = strlen(s);
+    s[len] = c;
+    s[len+1] = '\0';
 }
 
 //##################################################################################################################
@@ -386,24 +400,53 @@ int main()
     if(routerNum == 1)
     {
         FILE* file = fopen("r1-table.txt", "r");
-        char line[30];
+        char line[30] = "";
+        char ch;
+        int i = 0;
         while(!feof(file))
         {
-            fgets(line, sizeof(line), file);
-            printf("%s", line);
+            ch = fgetc(file);
+            if(ch == '\n')
+            {
+                strcpy(routerOneRoutingInfo[i], line);
+                i++;
+                line[0] = '\0';
+            }
+            else
+            {
+                appendChar(line, ch);
+            }
         }
         fclose(file);
     }
     else if(routerNum == 2)
     {
         FILE* file = fopen("r2-table.txt", "r");
-        char line[30];
+        char line[30] = "";
+        char ch;
+        int i = 0;
         while(!feof(file))
         {
-            fgets(line, sizeof(line), file);
-            printf("%s", line);
+            ch = fgetc(file);
+            if(ch == '\n')
+            {
+                strcpy(routerOneRoutingInfo[i], line);
+                i++;
+                line[0] = '\0';
+            }
+            else
+            {
+                appendChar(line, ch);
+            }
         }
         fclose(file);
+    }
+
+    //print routing table info to check valid info
+    int i = 0;
+    while(routerOneRoutingInfo[i] != NULL)
+    {
+        printf("%s\n", routerOneRoutingInfo[i]);
     }
 
     printf("Creating threads for each interface..\n");
