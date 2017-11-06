@@ -230,7 +230,10 @@ int main()
     //have the list, loop over the list
     for (tmp = ifaddr; tmp != NULL; tmp = tmp->ifa_next)
     {
-        numInterfaces++;
+        if (tmp->ifa_addr->sa_family == AF_PACKET)
+        {
+            numInterfaces++;
+        }
     }
 
     printf("There are %d total interfaces", numInterfaces);
