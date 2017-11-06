@@ -75,8 +75,8 @@ int routerNum = 0;
 
 //index of each array corresponds to router IP address on each interface
 //Example routerOneAddresses[0] == r1 address on eth0
-const char routerOneAddresses[3] = {"10.0.0.1", "10.1.0.1", "10.1.1.1"};
-const char routerTwoAddresses[4] = {"10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"};
+const char routerOneAddresses[3][9] = {"10.0.0.1", "10.1.0.1", "10.1.1.1"};
+const char routerTwoAddresses[4][9] = {"10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"};
 
 
 //#####################################################################################################################
