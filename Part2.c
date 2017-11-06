@@ -414,21 +414,12 @@ int main()
         }
         fclose(file);
     }
-    else if(routerNum == 2)
-    {
-        FILE* file = fopen("r2-table.txt", "r");
-        char line[30] = "";
-        int i = 0;
-        while(!feof(file))
-        {
-
-        }
-        fclose(file);
-    }
 
     //print routing table info to check valid info
     int i;
-    for(i = 0; i < sizeof(routerOneRoutingInfo)/ sizeof(*routerOneRoutingInfo); i++)
+    int numLines = sizeof(routerOneRoutingInfo)/sizeof(*routerOneRoutingInfo);
+    printf("Num entries in routing table1 = %d", numLines);
+    for(i = 0; i < numLines; i++)
     {
         printf("%s\n", routerOneRoutingInfo[i]);
         i++;
