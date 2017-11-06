@@ -156,39 +156,40 @@ void tokenizeTable(char s[5][30])
     {
 
         char *token;
+        const char d[2] = " ";
         int i = 0;
-        token = strtok(s[0], ' ');
+        token = strtok(s[0], d);
         while(token != NULL)
         {
             strcpy(routerOneLine0[i], token);
-            token = strtok(NULL, ' ');
+            token = strtok(NULL, d);
             i++;
         }
 
         i = 0;
-        token = strtok(s[1], ' ');
+        token = strtok(s[1], d);
         while(token != NULL)
         {
             strcpy(routerOneLine1[i], token);
-            token = strtok(NULL, ' ');
+            token = strtok(NULL, d);
             i++;
         }
 
         i = 0;
-        token = strtok(s[2], ' ');
+        token = strtok(s[2], d);
         while(token != NULL)
         {
             strcpy(routerOneLine2[i], token);
-            token = strtok(NULL, ' ');
+            token = strtok(NULL, d);
             i++;
         }
 
         i = 0;
-        token = strtok(s[3], ' ');
+        token = strtok(s[3], d);
         while(token != NULL)
         {
             strcpy(routerOneLine3[i], token);
-            token = strtok(NULL, ' ');
+            token = strtok(NULL, d);
             i++;
         }
 
@@ -198,47 +199,47 @@ void tokenizeTable(char s[5][30])
     {
         char *token;
         int i = 0;
-        token = strtok(s[0], ' ');
+        token = strtok(s[0], d);
         while(token != NULL)
         {
             strcpy(routerTwoLine0[i], token);
-            token = strtok(NULL, ' ');
+            token = strtok(NULL, d);
             i++;
         }
 
         i = 0;
-        token = strtok(s[1], ' ');
+        token = strtok(s[1], d);
         while(token != NULL)
         {
             strcpy(routerTwoLine1[i], token);
-            token = strtok(NULL, ' ');
+            token = strtok(NULL, d);
             i++;
         }
 
         i = 0;
-        token = strtok(s[2], ' ');
+        token = strtok(s[2], d);
         while(token != NULL)
         {
             strcpy(routerTwoLine2[i], token);
-            token = strtok(NULL, ' ');
+            token = strtok(NULL, d);
             i++;
         }
 
         i = 0;
-        token = strtok(s[3], ' ');
+        token = strtok(s[3], d);
         while(token != NULL)
         {
             strcpy(routerTwoLine3[i], token);
-            token = strtok(NULL, ' ');
+            token = strtok(NULL, d);
             i++;
         }
 
         i = 0;
-        token = strtok(s[4], ' ');
+        token = strtok(s[4], d);
         while(token != NULL)
         {
             strcpy(routerTwoLine4[i], token);
-            token = strtok(NULL, ' ');
+            token = strtok(NULL, d);
             i++;
         }
     }
