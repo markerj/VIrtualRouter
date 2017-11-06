@@ -251,8 +251,8 @@ void *interfaces(void *args)
             ethhdr = (struct ethheader *) buf;
             arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
 
-            printf("From eth%d thread: Destination address is %s", ethNum, ipAddressToString(arphdr->dst_ip));
-            printf("From eth%d thread: Equivalent address from array is %s", ethNum, routerOneAddresses[ethNum]);
+            printf("From eth%d thread: Destination address is %s\n", ethNum, ipAddressToString(arphdr->dst_ip));
+            printf("From eth%d thread: Equivalent address from array is %s\n", ethNum, routerOneAddresses[ethNum]);
 
             //if eth_type is of type ARP then send ARP reply
             if (ntohs(ethhdr->eth_type) == 0x0806 &&
