@@ -419,11 +419,6 @@ int main()
     int i;
     int numLines = sizeof(routerOneRoutingInfo)/sizeof(*routerOneRoutingInfo);
     printf("Num entries in routing table1 = %d\n", numLines);
-    for(i = 0; i < numLines; i++)
-    {
-        printf("%s\n", routerOneRoutingInfo[i]);
-        i++;
-    }
     printf("%s\n", routerOneRoutingInfo[0]);
     printf("%s\n", routerOneRoutingInfo[1]);
     printf("%s\n", routerOneRoutingInfo[2]);
