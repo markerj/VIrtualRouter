@@ -163,7 +163,7 @@ int main() {
         FD_SET(packet_socket, &readset);
 
         tv.tv_sec = 0;
-        tv.tv_usec = 0;
+        tv.tv_usec = 500000;
 
         result = select(packet_socket+1, &readset, NULL, NULL, &tv);
 
