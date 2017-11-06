@@ -156,7 +156,7 @@ void *interfaces(void *args)
 
             //create a packet socket on interface r?-eth1
             if (!strncmp(&(tmp->ifa_name[3]), "eth1", 4)) {
-                printf("From thread %d: Creating Socket on interface %s\n",ethNum, tmp->ifa_name);
+                printf("From eth%d thread: Creating Socket on interface %s\n",ethNum, tmp->ifa_name);
 
                 //get local mac address
                 getaddress = tmp->ifa_addr;
@@ -217,6 +217,7 @@ void *interfaces(void *args)
 
     }
 */
+    printf("Exiting eth% thread\n", ethNum);
 }
 
 
