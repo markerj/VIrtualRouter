@@ -73,6 +73,15 @@ pthread_t tids[10];
 int threadNums[10];
 int routerNum = 0;
 
+//Row corresponds to router number and column corresponds to interface num. Value is router ip on each interface
+//This is used to make sure router only arp responds to correct interfaces.
+//Example: routerAddresses[0][1] == r1 ipAdress on eth1
+//Example: routerAddresses[1][2] == r2 ipAdress on eth2
+char routerAddresses[2][4] = {
+        {"10.0.0.1", "10.1.0.1", "10.1.1.1", ""}.
+        {"10.0.0.2", "10.3.0.1", "10.3.1.1", "10.3.4.1"}
+};
+
 
 //#####################################################################################################################
 //                                              Checksum Calculation                                                  #
@@ -247,7 +256,7 @@ void *interfaces(void *args)
             arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
 
             //if eth_type is of type ARP then send ARP reply
-            if (ntohs(ethhdr->eth_type) == 0x0806) {
+            if (ntohs(ethhdr->eth_type) == 0x0806 && strncmp(ipAddressToString(arphdr->dst_ip), routerAddresses[routerNum-1][ethNum], 9)) {
 
                 printf("From eth%d thread: Got arp request\n", ethNum);
 
@@ -278,7 +287,7 @@ void *interfaces(void *args)
             }
 
                 //if eth_type is of type IP then must be ICMP packet
-            else if (ntohs(ethhdr->eth_type) == 0x0800) {
+            else if (ntohs(ethhdr->eth_type) == 0x0800 && strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[routerNum-1][ethNum], 9)) {
                 icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
                 printf("From eth%d thread: Received ICMP ECHO\n", ethNum);
 
@@ -353,16 +362,17 @@ int main()
         }
     }
 
-    printf("There are %d total interfaces\n", numInterfaces);
+    //printf("There are %d total interfaces\n", numInterfaces);
 
-    /*if(numInterfaces == 4)
+    //Figure out if this is r1 or r2. Used for receive packet logic
+    if(numInterfaces == 4)
     {
         routerNum = 1;
     }
     else if(numInterfaces == 5)
     {
         routerNum = 2;
-    }*/
+    }
 
     printf("Creating threads for each interface..\n");
 
