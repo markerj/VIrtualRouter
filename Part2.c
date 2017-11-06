@@ -217,7 +217,7 @@ void *interfaces(void *args)
 
     }
 */
-    printf("Exiting eth% thread\n", ethNum);
+    printf("Exiting eth%d thread\n", ethNum);
 }
 
 
