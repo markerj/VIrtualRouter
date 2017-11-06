@@ -165,7 +165,7 @@ int main() {
         tv.tv_sec = 0;
         tv.tv_usec = 0;
 
-        result = select(packet_socket, &readset, NULL, NULL, &tv);
+        result = select(packet_socket+1, &readset, NULL, NULL, &tv);
 
         if(result > 0)
         {
