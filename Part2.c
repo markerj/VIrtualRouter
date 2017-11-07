@@ -433,9 +433,12 @@ void *interfaces(void *args)
                 else if(ntohs(arphdr->op) == 2)
                 {
                     printf("Received ARP response\n");
-                    unsigned char destaddress[6];
-                    memcpy(ntohs(arphdr->src_addr), destaddress, 6);
-                    printf("Destination Address is: %s\n", destaddress);
+                    printf("%02X:%02X:%02X:%02X:%02X:%02X", ntohs(ethhdr->eth_src[0]),
+                           ntohs(ethhdr->eth_src[1]),
+                                 ntohs(ethhdr->eth_src[2]),
+                                       ntohs(ethhdr->eth_src[3]),
+                                             ntohs(ethhdr->eth_src[4]),
+                                                   ntohs(ethhdr->eth_src[5]));
                 }
 
             }
