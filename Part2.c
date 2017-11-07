@@ -434,8 +434,8 @@ void *interfaces(void *args)
                 {
                     printf("Received ARP response\n");
                     unsigned char destaddress[6];
-                    memcpy(arphdr->src_addr, destaddress, 6);
-                    printf("Destination Address is: %c\n", destaddress[0]);
+                    memcpy(ntohs(arphdr->src_addr), destaddress, 6);
+                    printf("Destination Address is: %s\n", destaddress);
                 }
 
             }
