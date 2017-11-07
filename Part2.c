@@ -432,7 +432,10 @@ void *interfaces(void *args)
                 //For Part2 we just need to print mac address obtained from arp
                 else if(ntohs(arphdr->op) == 2)
                 {
-
+                    printf("Received ARP response\n");
+                    unsigned char destaddress[6];
+                    memcpy(arphdr->src_addr, destaddress);
+                    printf("Destination Address is: %s\n", destaddress);
                 }
 
             }
