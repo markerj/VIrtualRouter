@@ -297,10 +297,10 @@ void *interfaces(void *args)
         //use the AF_INET addresses in this list for example to get a list
         //of our own IP addresses
 
-        if (tmp->ifa_addr->sa_family == AF_INET) {
+        /*if (tmp->ifa_addr->sa_family == AF_INET) {
             getip = tmp->ifa_addr;
             memcpy(localip, getip->sin_addr.s_addr, 4);
-        }
+        }*/
 
         if (tmp->ifa_addr->sa_family == AF_PACKET) {
             //printf("Interface: %s\n", tmp->ifa_name);
