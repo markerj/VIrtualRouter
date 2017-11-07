@@ -299,7 +299,7 @@ void *interfaces(void *args)
 
         if (tmp->ifa_addr->sa_family == AF_INET) {
             getip = tmp->ifa_addr;
-            memcpy(localip, getip->sin_addr, 4);
+            memcpy(localip, getip->sin_addr->s_addr, 4);
         }
 
         if (tmp->ifa_addr->sa_family == AF_PACKET) {
