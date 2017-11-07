@@ -433,7 +433,7 @@ void *interfaces(void *args)
                 else if(ntohs(arphdr->op) == 2)
                 {
                     printf("Received ARP response\n");
-                    printf("%02X:%02X:%02X:%02X:%02X:%02X", ntohs(ethhdr->eth_src[0]),
+                    printf("%X:%X:%X:%X:%X:%X", ntohs(ethhdr->eth_src[0]),
                            ntohs(ethhdr->eth_src[1]),
                                  ntohs(ethhdr->eth_src[2]),
                                        ntohs(ethhdr->eth_src[3]),
