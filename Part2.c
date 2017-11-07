@@ -283,6 +283,7 @@ void *interfaces(void *args)
     unsigned char localadr[6];
     unsigned char localip[4];
 
+    
     int packet_socket;
     //get list of interfaces (actually addresses)
     struct ifaddrs *ifaddr, *tmp;
