@@ -524,6 +524,7 @@ void *interfaces(void *args)
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine2[0], 7) == 0)
                     {
                         //send arp request on corresponding interface
+                        printf("Sending arp request on eth2\n");
                         send(sockets[2], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine3[0], 5) == 0)
