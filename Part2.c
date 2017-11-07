@@ -99,7 +99,9 @@ char routerTwoLine2[3][12] = {"", "", ""};
 char routerTwoLine3[3][12] = {"", "", ""};
 char routerTwoLine4[3][12] = {"", "", ""};
 
-char bufsToSend[4][1500] = {"", "", "", ""};
+//index corresponds to interface
+//sockets[0] will hold socket on eth0, sockets[1] will hold socket on eth1 etc..
+int sockets[4];
 
 
 //##################################################################################################################
@@ -322,6 +324,9 @@ void *interfaces(void *args)
                 if (bind(packet_socket, tmp->ifa_addr, sizeof(struct sockaddr_ll)) == -1) {
                     perror("bind");
                 }
+
+                //add packet_socket to sockets array (allows sending on any socket from any thread)
+                sockets[ethNum] = packet_socket;
             }
         }
     }
@@ -336,59 +341,55 @@ void *interfaces(void *args)
 
 
     printf("From eth%d thread: Ready to receive now\n", ethNum);
-    while (exitProgram == 0) {
-        int dataToSend = strncmp(bufsToSend[ethNum], "", strlen(bufsToSend[ethNum]));
-        if(dataToSend != 0)
+    while (exitProgram == 0)
+    {
+        //try to receive packet from socket
+        char buf[1500], sendbuf[1500];
+        struct sockaddr_ll recvaddr;
+        int recvaddrlen = sizeof(struct sockaddr_ll);
+
+        int result;
+        fd_set readset;
+        struct timeval tv;
+
+        FD_ZERO(&readset);
+        FD_SET(packet_socket, &readset);
+
+        tv.tv_sec = 0;
+        tv.tv_usec = 500000;
+
+        result = select(packet_socket+1, &readset, NULL, NULL, &tv);
+
+        if(result > 0)
         {
-            //forward data from bufsToSend
-        }
-        else
-        {
-            //try to receive packet from socket
-            char buf[1500], sendbuf[1500];
-            struct sockaddr_ll recvaddr;
-            int recvaddrlen = sizeof(struct sockaddr_ll);
+            //we can use recv, since the addresses are in the packet, but we
+            //use recvfrom because it gives us an easy way to determine if
+            //this packet is incoming or outgoing (when using ETH_P_ALL, we
+            //see packets in both directions. Only outgoing can be seen when
+            //using a packet socket with some specific protocol)
+            int n = recvfrom(packet_socket, buf, 1500, 0, (struct sockaddr *) &recvaddr, &recvaddrlen);
+            //ignore outgoing packets (we can't disable some from being sent
+            //by the OS automatically, for example ICMP port unreachable
+            //messages, so we will just ignore them here)
+            if (recvaddr.sll_pkttype == PACKET_OUTGOING) {
+                continue;
+            }
+            //start processing all others
+            printf("\n");
+            printf("From eth%d thread: Got a %d byte packet\n", ethNum, n);
 
-            int result;
-            fd_set readset;
-            struct timeval tv;
+            iphdr = (struct ipheader *) (buf + sizeof(struct ethheader));
+            ethhdr = (struct ethheader *) buf;
+            arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
 
-            FD_ZERO(&readset);
-            FD_SET(packet_socket, &readset);
-
-            tv.tv_sec = 0;
-            tv.tv_usec = 500000;
-
-            result = select(packet_socket+1, &readset, NULL, NULL, &tv);
-
-            if(result > 0)
+            //if destination is router itself
+            //if eth_type is of type ARP and router IP address matches correct interface then send ARP reply
+            if (ntohs(ethhdr->eth_type) == 0x0806 &&
+                !strncmp(ipAddressToString(arphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
             {
-                //we can use recv, since the addresses are in the packet, but we
-                //use recvfrom because it gives us an easy way to determine if
-                //this packet is incoming or outgoing (when using ETH_P_ALL, we
-                //see packets in both directions. Only outgoing can be seen when
-                //using a packet socket with some specific protocol)
-                int n = recvfrom(packet_socket, buf, 1500, 0, (struct sockaddr *) &recvaddr, &recvaddrlen);
-                //ignore outgoing packets (we can't disable some from being sent
-                //by the OS automatically, for example ICMP port unreachable
-                //messages, so we will just ignore them here)
-                if (recvaddr.sll_pkttype == PACKET_OUTGOING) {
-                    continue;
-                }
-                //start processing all others
-                printf("\n");
-                printf("From eth%d thread: Got a %d byte packet\n", ethNum, n);
-
-                iphdr = (struct ipheader *) (buf + sizeof(struct ethheader));
-                ethhdr = (struct ethheader *) buf;
-                arphdr = (struct arpheader *) (buf + sizeof(struct ethheader));
-
-                //if destination is router itself
-                //if eth_type is of type ARP and router IP address matches correct interface then send ARP reply
-                if (ntohs(ethhdr->eth_type) == 0x0806 &&
-                    !strncmp(ipAddressToString(arphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
+                //Received arp request, send arp reply
+                if(ntohs(arphdr->op) == 1)
                 {
-
                     printf("From eth%d thread: Got arp request\n", ethNum);
 
                     printf("From eth%d thread: Building arp header\n", ethNum);
@@ -414,174 +415,132 @@ void *interfaces(void *args)
                     printf("From eth%d thread: Attempting to send arp reply\n", ethNum);
                     //send arp reply
                     send(packet_socket, sendbuf, 42, 0);
-
                 }
 
-                //if destination is router itself
-                //if eth_type is of type IP and router IP address matches correct interface then must be ICMP packet
-                else if (ntohs(ethhdr->eth_type) == 0x0800 &&
-                         !strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
+                //Received arp response, forward packet to corresponding mac address
+                else if(ntohs(arphdr->op) == 2)
                 {
-                    icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
-                    printf("From eth%d thread: Received ICMP ECHO\n", ethNum);
 
-                    //ICMP echo request
-                    if (icmphdr->type == 8) {
-                        printf("From eth%d thread: Received ICMP ECHO request\n", ethNum);
-
-
-                        //copy received packet to send back
-                        memcpy(sendbuf, buf, 1500);
-
-                        printf("From eth%d thread: Building ICMP header\n", ethNum);
-                        //fill ICMP header
-                        icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) +
-                                                              sizeof(struct ipheader)));
-                        icmphdrsend->type = 0;
-                        icmphdrsend->checksum = 0;
-                        icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
-                                                          (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
-
-                        printf("From eth%d thread: Building IP header\n", ethNum);
-                        //fill IP header
-                        iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
-                        memcpy(iphdrsend->src_ip, iphdr->dst_ip, 4);
-                        memcpy(iphdrsend->dst_ip, iphdr->src_ip, 4);
-
-                        printf("From eth%d thread: Building ethernet header\n", ethNum);
-                        //fill ethernet header
-                        ethhdrsend = (struct ethheader *) sendbuf;
-                        memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
-                        memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
-
-                        printf("From eth%d thread: Attempting to send ICMP response\n", ethNum);
-                        //send ICMP respsonse packet
-                        send(packet_socket, sendbuf, 98, 0);
-                    }
-
-
-                }
-
-                //add data to forward array
-                else if(routerNum == 1)
-                {
-                    //router 1 forward data
-                    if (ntohs(ethhdr->eth_type) == 0x0806)
-                    {
-
-                        if(strncmp(ipAddressToString(arphdr->dst_ip), routerOneLine0[0], 5) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerOneLine1[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerOneLine2[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerOneLine3[0], 5) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else
-                        {
-                            //destination unreachable
-                        }
-                    }
-                    else if (ntohs(ethhdr->eth_type) == 0x0800)
-                    {
-                        if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine0[0], 5) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine1[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine2[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine3[0], 5) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else
-                        {
-                            //destination unreachable
-                        }
-                    }
-
-                }
-                else if(routerNum == 2)
-                {
-                    //router 2 forward data
-                    if (ntohs(ethhdr->eth_type) == 0x0806)
-                    {
-
-                        if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine0[0], 5) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine1[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine2[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine3[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine4[0], 5) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else
-                        {
-                            //destination unreachable
-                        }
-                    }
-                    else if (ntohs(ethhdr->eth_type) == 0x0800)
-                    {
-                        if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine0[0], 5) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine1[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine2[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine3[0], 7) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine4[0], 5) == 0)
-                        {
-                            //add buf to bufsToSend in index of eth in 3rd token
-                        }
-                        else
-                        {
-                            //destination unreachable
-                        }
-                    }
                 }
 
             }
-            else
+
+            //if destination is router itself
+            //if eth_type is of type IP and router IP address matches correct interface then must be ICMP packet
+            else if (ntohs(ethhdr->eth_type) == 0x0800 &&
+                     !strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
             {
-                //printf("From eth%d thread: Didn't receive anything..\n", ethNum);
-            }
-        }
+                icmphdr = (struct icmpheader *) (buf + sizeof(struct ethheader) + sizeof(struct ipheader));
+                printf("From eth%d thread: Received ICMP ECHO\n", ethNum);
 
+                //ICMP echo request
+                if (icmphdr->type == 8) {
+                    printf("From eth%d thread: Received ICMP ECHO request\n", ethNum);
+
+
+                    //copy received packet to send back
+                    memcpy(sendbuf, buf, 1500);
+
+                    printf("From eth%d thread: Building ICMP header\n", ethNum);
+                    //fill ICMP header
+                    icmphdrsend = ((struct icmpheader *) (sendbuf + sizeof(struct ethheader) +
+                                                          sizeof(struct ipheader)));
+                    icmphdrsend->type = 0;
+                    icmphdrsend->checksum = 0;
+                    icmphdrsend->checksum = in_chksum((char *) icmphdrsend,
+                                                      (1500 - sizeof(struct ethheader) - sizeof(struct ipheader)));
+
+                    printf("From eth%d thread: Building IP header\n", ethNum);
+                    //fill IP header
+                    iphdrsend = (struct ipheader *) (sendbuf + sizeof(struct ethheader));
+                    memcpy(iphdrsend->src_ip, iphdr->dst_ip, 4);
+                    memcpy(iphdrsend->dst_ip, iphdr->src_ip, 4);
+
+                    printf("From eth%d thread: Building ethernet header\n", ethNum);
+                    //fill ethernet header
+                    ethhdrsend = (struct ethheader *) sendbuf;
+                    memcpy(ethhdrsend->eth_dst, ethhdr->eth_src, 6);
+                    memcpy(ethhdrsend->eth_src, ethhdr->eth_dst, 6);
+
+                    printf("From eth%d thread: Attempting to send ICMP response\n", ethNum);
+                    //send ICMP respsonse packet
+                    send(packet_socket, sendbuf, 98, 0);
+                }
+
+
+            }
+
+            else if(routerNum == 1)
+            {
+                //router 1 forward data
+                if (ntohs(ethhdr->eth_type) == 0x0800)
+                {
+                    //create arp request to send
+                    arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
+
+                    if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine0[0], 5) == 0)
+                    {
+                        //send arp request on corresponding interface
+                    }
+                    else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine1[0], 7) == 0)
+                    {
+                        //send arp request on corresponding interface
+                    }
+                    else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine2[0], 7) == 0)
+                    {
+                        //send arp request on corresponding interface
+                    }
+                    else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine3[0], 5) == 0)
+                    {
+                        //send arp request on corresponding interface
+                    }
+                    else
+                    {
+                        //destination unreachable
+                    }
+                }
+
+            }
+            else if(routerNum == 2)
+            {
+                //router 2 forward data
+                if (ntohs(ethhdr->eth_type) == 0x0800)
+                {
+                    //create arp request to send
+                    arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
+
+                    if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine0[0], 5) == 0)
+                    {
+                        //send arp request on corresponding interface
+                    }
+                    else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine1[0], 7) == 0)
+                    {
+                        //send arp request on corresponding interface
+                    }
+                    else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine2[0], 7) == 0)
+                    {
+                        //send arp request on corresponding interface
+                    }
+                    else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine3[0], 7) == 0)
+                    {
+                        //send arp request on corresponding interface
+                    }
+                    else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine4[0], 5) == 0)
+                    {
+                        //send arp request on corresponding interface
+                    }
+                    else
+                    {
+                        //destination unreachable
+                    }
+                }
+            }
+
+        }
+        else
+        {
+            //printf("From eth%d thread: Didn't receive anything..\n", ethNum);
+        }
     }
 
     printf("Exiting eth%d thread\n", ethNum);
