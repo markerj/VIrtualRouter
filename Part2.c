@@ -103,6 +103,8 @@ char routerTwoLine4[3][12] = {"", "", ""};
 //sockets[0] will hold socket on eth0, sockets[1] will hold socket on eth1 etc..
 int sockets[4];
 
+unsigned char zeros[6] = "000000";
+unsigned char broadband[6] = "FFFFFF";
 
 //##################################################################################################################
 //                                              Checksum Calculation                                               #
@@ -277,7 +279,9 @@ void *interfaces(void *args)
     struct ipheader *iphdr, *iphdrsend;
     struct icmpheader *icmphdr, *icmphdrsend;
     struct sockaddr_ll *getaddress;
+    struct sockaddr_in *getip;
     unsigned char localadr[6];
+    unsigned char localip[4];
 
     int packet_socket;
     //get list of interfaces (actually addresses)
@@ -292,6 +296,12 @@ void *interfaces(void *args)
         //about those for the purpose of enumerating interfaces. We can
         //use the AF_INET addresses in this list for example to get a list
         //of our own IP addresses
+
+        if (tmp->ifa_addr->sa_family == AF_INET) {
+            getip = tmp->ifa_addr;
+            memcpy(localip, getip->sin_addr, 4);
+        }
+
         if (tmp->ifa_addr->sa_family == AF_PACKET) {
             //printf("Interface: %s\n", tmp->ifa_name);
 
@@ -304,6 +314,7 @@ void *interfaces(void *args)
                 //get local mac address
                 getaddress = tmp->ifa_addr;
                 memcpy(localadr, getaddress->sll_addr, 6);
+
 
                 //create a packet socket
                 //AF_PACKET makes it a packet socket
@@ -418,6 +429,7 @@ void *interfaces(void *args)
                 }
 
                 //Received arp response, forward packet to corresponding mac address
+                //For Part2 we just need to print mac address obtained from arp
                 else if(ntohs(arphdr->op) == 2)
                 {
 
@@ -475,8 +487,29 @@ void *interfaces(void *args)
                 //router 1 forward data
                 if (ntohs(ethhdr->eth_type) == 0x0800)
                 {
+                    printf("From eth%d thread: Building arp request\n", ethNum);
                     //create arp request to send
                     arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
+
+                    printf("From eth%d thread: Building arp header\n", ethNum);
+                    //fill arp header
+                    arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
+                    arphdrsend->hardware = htons(1);
+                    arphdrsend->protocol = htons(ETH_P_IP);
+                    arphdrsend->hardware_length = 6;
+                    arphdrsend->protocol_length = 4;
+                    arphdrsend->op = htons(1);
+                    memcpy(arphdrsend->src_addr, localadr);
+                    memcpy(arphdrsend->src_ip, localip);
+                    memcpy(arphdrsend->dst_addr, zeros);
+                    memcpy(arphdrsend->dst_ip, iphdr->dst_ip);
+
+                    printf("From eth%d thread: Building ethernet header\n", ethNum);
+                    //fill ethernet header
+                    ethhdrsend = (struct ethheader *) sendbuf;
+                    memcpy(ethhdrsend->eth_dst, broadband);
+                    memcpy(ethhdrsend->eth_src, localadr);
+                    ethhdrsend->eth_type = htons(0x0806);
 
                     if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine0[0], 5) == 0)
                     {
@@ -489,6 +522,7 @@ void *interfaces(void *args)
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine2[0], 7) == 0)
                     {
                         //send arp request on corresponding interface
+                        send(sockets[2], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine3[0], 5) == 0)
                     {
