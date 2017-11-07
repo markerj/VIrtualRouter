@@ -103,8 +103,8 @@ char routerTwoLine4[3][12] = {"", "", ""};
 //sockets[0] will hold socket on eth0, sockets[1] will hold socket on eth1 etc..
 int sockets[4];
 
-unsigned char zeros[6] = "000000";
-unsigned char broadband[6] = "FFFFFF";
+unsigned char zeros[6];
+unsigned char broadband[6];
 
 //##################################################################################################################
 //                                              Checksum Calculation                                               #
@@ -487,6 +487,8 @@ void *interfaces(void *args)
                 //router 1 forward data
                 if (ntohs(ethhdr->eth_type) == 0x0800)
                 {
+                    memset(zeros, 0, 6);
+                    memset(broadband, F, 6);
                     printf("From eth%d thread: Building arp request\n", ethNum);
                     //create arp request to send
                     arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
