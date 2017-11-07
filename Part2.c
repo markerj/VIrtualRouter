@@ -488,7 +488,7 @@ void *interfaces(void *args)
                 if (ntohs(ethhdr->eth_type) == 0x0800)
                 {
                     memset(zeros, 0, 6);
-                    memset(broadband, F, 6);
+                    memset(broadband, 15, 6);
                     printf("From eth%d thread: Building arp request\n", ethNum);
                     //create arp request to send
                     arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
