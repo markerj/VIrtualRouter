@@ -485,6 +485,10 @@ void *interfaces(void *args)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
+                        else
+                        {
+                            //destination unreachable
+                        }
                     }
                     else if (ntohs(ethhdr->eth_type) == 0x0800)
                     {
@@ -503,6 +507,10 @@ void *interfaces(void *args)
                         else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine3[0], 5) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else
+                        {
+                            //destination unreachable
                         }
                     }
 
@@ -533,6 +541,10 @@ void *interfaces(void *args)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
+                        else
+                        {
+                            //destination unreachable
+                        }
                     }
                     else if (ntohs(ethhdr->eth_type) == 0x0800)
                     {
@@ -555,6 +567,10 @@ void *interfaces(void *args)
                         else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine4[0], 5) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
+                        }
+                        else
+                        {
+                            //destination unreachable
                         }
                     }
                 }
@@ -701,5 +717,5 @@ int main()
     printf("Shutting down. Goodbye!\n");
 
     return 0;
-    
+
 }
