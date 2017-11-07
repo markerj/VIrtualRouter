@@ -417,8 +417,8 @@ void *interfaces(void *args)
 
                 }
 
-                    //if destination is router itself
-                    //if eth_type is of type IP and router IP address matches correct interface then must be ICMP packet
+                //if destination is router itself
+                //if eth_type is of type IP and router IP address matches correct interface then must be ICMP packet
                 else if (ntohs(ethhdr->eth_type) == 0x0800 &&
                          !strncmp(ipAddressToString(iphdr->dst_ip), routerAddresses[((routerNum-1)*4) + ethNum], 9))
                 {
@@ -512,100 +512,47 @@ void *interfaces(void *args)
                     //router 2 forward data
                     if (ntohs(ethhdr->eth_type) == 0x0806)
                     {
-                        char dstSubStr16 [5];
-                        char dstSubStr24 [7];
-                        memcpy(dstSubStr16, ipAddressToString(arphdr->dst_ip), 4);
-                        subStr16[4] = '\0';
-                        memcpy(dstSubStr24, ipAddressToString(arphdr->dst_ip), 6);
-                        subStr24[6] = '\0';
 
-                        char line0SubStr[5];
-                        memcpy(line0SubStr, routerTwoLine0[0], 4);
-                        line0SubStr[4] = '\0';
-
-                        char line1SubStr[7];
-                        memcpy(line1SubStr, routerTwoLine1[0], 6);
-                        line1SubStr[6] = '\0';
-
-                        char line2SubStr[7];
-                        memcpy(line2SubStr, routerTwoLine2[0], 6);
-                        line2SubStr[6] = '\0';
-
-                        char line3SubStr[7];
-                        memcpy(line3SubStr, routerTwoLine3[0], 6);
-                        line3SubStr[6] = '\0';
-
-                        char line4SubStr[5];
-                        memcpy(line4SubStr, routerTwoLine4[0], 4);
-                        line4SubStr[4] = '\0';
-
-                        if(strncmp(dstSubStr16, line0SubStr) == 0)
+                        if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine0[0], 5) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
-                        else if(strncmp(dstSubStr24, line1SubStr) == 0)
+                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine1[0], 7) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
-                        else if(strncmp(dstSubStr24, line2SubStr) == 0)
+                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine2[0], 7) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
-                        else if(strncmp(dstSubStr24, line3SubStr) == 0)
+                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine3[0], 7) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
-                        else if(strncmp(dstSubStr16, line4SubStr) == 0)
+                        else if(strncmp(ipAddressToString(arphdr->dst_ip), routerTwoLine4[0], 5) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
                     }
                     else if (ntohs(ethhdr->eth_type) == 0x0800)
                     {
-                        char dstSubStr16 [5];
-                        char dstSubStr24 [7];
-                        memcpy(dstSubStr16, ipAddressToString(iphdr->dst_ip), 4);
-                        subStr16[4] = '\0';
-                        memcpy(dstSubStr24, ipAddressToString(iphdr->dst_ip), 6);
-                        subStr24[6] = '\0';
-
-                        char line0SubStr[5];
-                        memcpy(line0SubStr, routerTwoLine0[0], 4);
-                        line0SubStr[4] = '\0';
-
-                        char line1SubStr[7];
-                        memcpy(line1SubStr, routerTwoLine1[0], 6);
-                        line1SubStr[6] = '\0';
-
-                        char line2SubStr[7];
-                        memcpy(line2SubStr, routerTwoLine2[0], 6);
-                        line2SubStr[6] = '\0';
-
-                        char line3SubStr[7];
-                        memcpy(line3SubStr, routerTwoLine3[0], 6);
-                        line3SubStr[6] = '\0';
-
-                        char line4SubStr[5];
-                        memcpy(line4SubStr, routerTwoLine4[0], 4);
-                        line4SubStr[4] = '\0';
-
-                        if(strncmp(dstSubStr16, line0SubStr) == 0)
+                        if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine0[0], 5) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
-                        else if(strncmp(dstSubStr24, line1SubStr) == 0)
+                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine1[0], 7) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
-                        else if(strncmp(dstSubStr24, line2SubStr) == 0)
+                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine2[0], 7) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
-                        else if(strncmp(dstSubStr24, line3SubStr) == 0)
+                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine3[0], 7) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
-                        else if(strncmp(dstSubStr16, line4SubStr) == 0)
+                        else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine4[0], 5) == 0)
                         {
                             //add buf to bufsToSend in index of eth in 3rd token
                         }
