@@ -283,7 +283,7 @@ void *interfaces(void *args)
     unsigned char localadr[6];
     unsigned char localip[4];
 
-    
+
     int packet_socket;
     //get list of interfaces (actually addresses)
     struct ifaddrs *ifaddr, *tmp;
@@ -434,12 +434,12 @@ void *interfaces(void *args)
                 else if(ntohs(arphdr->op) == 2)
                 {
                     printf("Received ARP response\n");
-                    printf("%X:%X:%X:%X:%X:%X", ntohs(ethhdr->eth_src[0]),
-                           ntohs(ethhdr->eth_src[1]),
-                                 ntohs(ethhdr->eth_src[2]),
-                                       ntohs(ethhdr->eth_src[3]),
-                                             ntohs(ethhdr->eth_src[4]),
-                                                   ntohs(ethhdr->eth_src[5]));
+                    printf("%X:%X:%X:%X:%X:%X", ethhdr->eth_src[0],
+                           ethhdr->eth_src[1],
+                                 ethhdr->eth_src[2],
+                                       ethhdr->eth_src[3],
+                                             ethhdr->eth_src[4],
+                                                   ethhdr->eth_src[5]);
                 }
 
             }
