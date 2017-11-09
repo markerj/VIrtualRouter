@@ -597,8 +597,32 @@ void *interfaces(void *args)
                 //router 2 forward data
                 if (ntohs(ethhdr->eth_type) == 0x0800)
                 {
+                    memset(zeros, 0, 6);
+                    memset(broadband, 255, 6);
+                    printf("Need to forward\n");
+                    printf("From eth%d thread: Building arp request\n", ethNum);
                     //create arp request to send
                     arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
+
+                    printf("From eth%d thread: Building arp header\n", ethNum);
+                    //fill arp header
+                    arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
+                    arphdrsend->hardware = htons(1);
+                    arphdrsend->protocol = htons(ETH_P_IP);
+                    arphdrsend->hardware_length = 6;
+                    arphdrsend->protocol_length = 4;
+                    arphdrsend->op = htons(1);
+                    memcpy(arphdrsend->src_addr, localadr, 6);
+                    memcpy(arphdrsend->src_ip, localip, 4);
+                    memcpy(arphdrsend->dst_addr, zeros, 6);
+                    memcpy(arphdrsend->dst_ip, iphdr->dst_ip, 4);
+
+                    printf("From eth%d thread: Building ethernet header\n", ethNum);
+                    //fill ethernet header
+                    ethhdrsend = (struct ethheader *) sendbuf;
+                    memcpy(ethhdrsend->eth_dst, broadband, 6);
+                    memcpy(ethhdrsend->eth_src, localadr, 6);
+                    ethhdrsend->eth_type = htons(0x0806);
 
                     if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine0[0], 5) == 0)
                     {
