@@ -562,6 +562,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerOneLine3[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(arphdrsend->dst_ip, htonhs(routerOneLine3[1]), 4);
                         send(sockets[socketnumber], sendbuf, 42, 0);
 
                         //Desination is a host connected to other router so we need to update the destination
@@ -617,6 +618,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerTwoLine4[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(arphdrsend->dst_ip, htonhs(routerTwoLine4[1]), 4);
                         send(sockets[socketnumber], sendbuf, 42, 0);
 
                         //Desination is a host connected to other router so we need to update the destination
