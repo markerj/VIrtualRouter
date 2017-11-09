@@ -538,7 +538,7 @@ void *interfaces(void *args)
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine2[0], 7) == 0)
                     {
                         //send arp request on corresponding interface
-                        int socketnumber = routerOneLine2[2][6];
+                        int socketnumber = routerOneLine2[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
                         send(sockets[socketnumber], sendbuf, 42, 0);
                     }
