@@ -559,14 +559,30 @@ void *interfaces(void *args)
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine3[0], 5) == 0)
                     {
+                        //Desination is a host connected to other router so we need to update the destination
+                        //IP for the arp request to the IP address in routing table (routerOneLine3[1])
+                        char *str = routerOneLine3[1], *str2;
+                        unsigned char value[4] = {0};
+                        size_t index = 0;
+
+                        str2 = str; /* save the pointer */
+                        while (*str) {
+                            if (isdigit((unsigned char)*str)) {
+                                value[index] *= 10;
+                                value[index] += *str - '0';
+                            } else {
+                                index++;
+                            }
+                            str++;
+                        }
+
+                        memcpy(arphdrsend->dst_ip, value, 4);
+
                         //send arp request on corresponding interface
                         int socketnumber = routerOneLine3[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
                         memcpy(arphdrsend->dst_ip, htonhs(routerOneLine3[1]), 4);
                         send(sockets[socketnumber], sendbuf, 42, 0);
-
-                        //Desination is a host connected to other router so we need to update the destination
-                        //IP for the arp request to the IP address in routing table (routerOneLine3[1])
                     }
                     else
                     {
@@ -615,14 +631,30 @@ void *interfaces(void *args)
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine4[0], 5) == 0)
                     {
+                        //Desination is a host connected to other router so we need to update the destination
+                        //IP for the arp request to the IP address in routing table (routerTwoLine4[1])
+                        char *str = routerTwoLine4[1], *str2;
+                        unsigned char value[4] = {0};
+                        size_t index = 0;
+
+                        str2 = str; /* save the pointer */
+                        while (*str) {
+                            if (isdigit((unsigned char)*str)) {
+                                value[index] *= 10;
+                                value[index] += *str - '0';
+                            } else {
+                                index++;
+                            }
+                            str++;
+                        }
+
+                        memcpy(arphdrsend->dst_ip, value, 4);
+
                         //send arp request on corresponding interface
                         int socketnumber = routerTwoLine4[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
-                        memcpy(arphdrsend->dst_ip, htonhs(routerTwoLine4[1]), 4);
                         send(sockets[socketnumber], sendbuf, 42, 0);
 
-                        //Desination is a host connected to other router so we need to update the destination
-                        //IP for the arp request to the IP address in routing table (routerTwoLine4[1])
                     }
                     else
                     {
