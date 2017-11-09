@@ -434,7 +434,7 @@ void *interfaces(void *args)
                 else if(ntohs(arphdr->op) == 2)
                 {
                     printf("Received ARP response\n");
-                    printf("%02x:%02x:%02x:%02x:%02x:%02x", ethhdr->eth_src[0],
+                    printf("Destination Address: %02x:%02x:%02x:%02x:%02x:%02x", ethhdr->eth_src[0],
                            ethhdr->eth_src[1],
                                  ethhdr->eth_src[2],
                                        ethhdr->eth_src[3],
@@ -496,6 +496,7 @@ void *interfaces(void *args)
                 {
                     memset(zeros, 0, 6);
                     memset(broadband, 255, 6);
+                    printf("Need to forward\n");
                     printf("From eth%d thread: Building arp request\n", ethNum);
                     //create arp request to send
                     arphdrsend = (struct arpheader *) (sendbuf + sizeof(struct ethheader));
@@ -523,26 +524,40 @@ void *interfaces(void *args)
                     if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine0[0], 5) == 0)
                     {
                         //send arp request on corresponding interface
+                        int socketnumber = routerOneLine0[2][6];
+                        printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine1[0], 7) == 0)
                     {
                         //send arp request on corresponding interface
+                        int socketnumber = routerOneLine1[2][6];
+                        printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine2[0], 7) == 0)
                     {
                         //send arp request on corresponding interface
-                        printf("From eth%d thread: Sending arp request on eth2\n", ethNum);
-                        send(sockets[2], sendbuf, 42, 0);
-                        printf("Eth from routing table: %c", routerOneLine2[2][6]);
+                        int socketnumber = routerOneLine2[2][6];
+                        printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine3[0], 5) == 0)
                     {
                         //send arp request on corresponding interface
+                        int socketnumber = routerOneLine3[2][6];
+                        printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        send(sockets[socketnumber], sendbuf, 42, 0);
+
+                        //Desination is a host connected to other router so we need to update the destination
+                        //IP for the arp request to the IP address in routing table (routerOneLine3[1])
                     }
                     else
                     {
                         //destination unreachable
                     }
+
+                    printf("\n");
                 }
 
             }
@@ -557,27 +572,47 @@ void *interfaces(void *args)
                     if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine0[0], 5) == 0)
                     {
                         //send arp request on corresponding interface
+                        int socketnumber = routerTwoLine0[2][6];
+                        printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine1[0], 7) == 0)
                     {
                         //send arp request on corresponding interface
+                        int socketnumber = routerTwoLine1[2][6];
+                        printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine2[0], 7) == 0)
                     {
                         //send arp request on corresponding interface
+                        int socketnumber = routerTwoLine2[2][6];
+                        printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine3[0], 7) == 0)
                     {
                         //send arp request on corresponding interface
+                        int socketnumber = routerTwoLine3[2][6];
+                        printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine4[0], 5) == 0)
                     {
                         //send arp request on corresponding interface
+                        int socketnumber = routerTwoLine4[2][6];
+                        printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        send(sockets[socketnumber], sendbuf, 42, 0);
+
+                        //Desination is a host connected to other router so we need to update the destination
+                        //IP for the arp request to the IP address in routing table (routerTwoLine4[1])
                     }
                     else
                     {
                         //destination unreachable
                     }
+
+                    printf("\n");
                 }
             }
 
