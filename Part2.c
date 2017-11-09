@@ -491,7 +491,7 @@ void *interfaces(void *args)
 
 
             }
-            else if(ntohs(ethhdr->eth_type) == 0x0806 && ntohs(arphdr->op) == 2)
+            else if(ntohs(ethhdr->eth_type) == 0x0806 && arphdr->op == 2)
             {
                 printf("From eth%d thread: Received ARP response\n", ethNum);
                 printf("From eth%d thread: Destination Address: %02x:%02x:%02x:%02x:%02x:%02x\n",
