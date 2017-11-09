@@ -491,7 +491,7 @@ void *interfaces(void *args)
 
 
             }
-            /*else if(ntohs(ethhdr->eth_type) == 0x0806)
+            else if(ntohs(ethhdr->eth_type) == 0x0806)
             {
                 printf("From eth%d thread: Received ARP response\n", ethNum);
                 printf("From eth%d thread: Destination Address: %02x:%02x:%02x:%02x:%02x:%02x\n",
@@ -502,7 +502,7 @@ void *interfaces(void *args)
                        ethhdr->eth_src[3],
                        ethhdr->eth_src[4],
                        ethhdr->eth_src[5]);
-            }*/
+            }
 
             else if(routerNum == 1)
             {
