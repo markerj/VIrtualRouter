@@ -429,6 +429,7 @@ void *interfaces(void *args)
                     send(packet_socket, sendbuf, 42, 0);
                 }
 
+                    
                 //Received arp response, forward packet to corresponding mac address
                 //For Part2 we just need to print mac address obtained from arp
                 else if(ntohs(arphdr->op) == 2)
