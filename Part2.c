@@ -252,7 +252,7 @@ void tokenizeTable(char s[5][30])
 }
 
 //##################################################################################################################
-//                                        Signal Handler (To exit on Ctrl-C)                                        #
+//                                        Signal Handler (To exit on Ctrl-C)                                       #
 //##################################################################################################################
 
 void exitprog(int sig)
@@ -565,12 +565,16 @@ void *interfaces(void *args)
                         unsigned char value[4] = {0};
                         size_t index = 0;
 
-                        str2 = str; /* save the pointer */
-                        while (*str) {
-                            if (isdigit((unsigned char)*str)) {
+                        str2 = str;
+                        while (*str)
+                        {
+                            if (isdigit((unsigned char)*str))
+                            {
                                 value[index] *= 10;
                                 value[index] += *str - '0';
-                            } else {
+                            }
+                            else
+                            {
                                 index++;
                             }
                             str++;
@@ -660,12 +664,16 @@ void *interfaces(void *args)
                         unsigned char value[4] = {0};
                         size_t index = 0;
 
-                        str2 = str; /* save the pointer */
-                        while (*str) {
-                            if (isdigit((unsigned char)*str)) {
+                        str2 = str;
+                        while (*str)
+                        {
+                            if (isdigit((unsigned char)*str))
+                            {
                                 value[index] *= 10;
                                 value[index] += *str - '0';
-                            } else {
+                            }
+                            else
+                            {
                                 index++;
                             }
                             str++;
