@@ -34,7 +34,14 @@ You can also now ping any host from any other host and the 'local' router (one d
 Actually forwarding the packet to the "next hop" address will be implemented in Part 3.
 
 ## How to run (Part 3):
-Steps 1-8 remain the same from Part 2.
+1. start mininet on eos
+2. Login to mininet
+3. Either clone this directory where you want or switch to directory where you previously cloned.
+4. Pull to make sure it's up to date
+5. Use ifconfig to obtain mininet IP address
+6. ssh into this IP in eos terminal by typing "ssh -Y mininet@ipaddressfromstep5"
+7. Switch to github directory
+8. Run "sudo python prj3-net.py"
 9. Compile Part3.c by typing "gcc -o Part3 Part3.c -lpthread" (must use -lpthread flag now that the program implements threading) (ignore compile error for now)
 10. Run Part 3 (on the routers only: r1, r2) by typing ./Part3
 
