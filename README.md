@@ -31,3 +31,6 @@ You can now ping each router from each of it's respective hosts (r1 - h1,h2 | r2
 You can also now ping any host from any other host and the 'local' router (one directly connected to host sending ping) will print the mac address of the next hop. This next hop will either be the destination (in the case it's a neighbor host) or it will be the non local router address (in the case the packet needs to be forwarded across machines (from r1 to r2 or vice versa))
 
 Actually forwarding the packet to the "next hop" address will be implemented in Part 3.
+
+## How to run (Part 3):
+Steps 1-9 remain the same from Part 2. Working on adding forwarding features
