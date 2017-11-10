@@ -15,7 +15,7 @@
 12. You can now ping router1 by typing "ping 10.1.0.1" inside h1 terminal
 13. DONE
 
-## How to run (Part 2) - STILL WORKING ON COMPLETING ALL DELIVERBALES
+## How to run (Part 2):
 1. start mininet on eos
 2. Login to mininet
 3. Either clone this directory where you want or switch to directory where you previously cloned.
@@ -27,3 +27,5 @@
 9. Compile Part2.c by typing "gcc -o Part2 Part2.c -lpthread" (must use -lpthread flag now that the program implements threading) (ignore compile error for now)
 
 You can now ping each router from each of it's respective hosts (r1 - h1,h2 | r2 - h3,h4,h5) simultaneously. This is because mulithreading is implemented which creates a new thread for each socket for each interface when the program is run on one or both of the routers. Refer to network diagram on project page for IP addresses to ping each router from their respective hosts.
+
+You can also now ping other 'local' hosts and the router will print out the mac address of destination host from arp response. (Getting a bug for some reason when pinging other router or other router's hosts where it prints out the broadband (ff:ff:ff:ff:ff:ff) mac address instead of the other routers ip address) <- still working to resolve bug
