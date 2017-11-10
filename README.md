@@ -25,6 +25,7 @@
 7. Switch to github directory
 8. Run "sudo python prj3-net.py"
 9. Compile Part2.c by typing "gcc -o Part2 Part2.c -lpthread" (must use -lpthread flag now that the program implements threading) (ignore compile error for now)
+10. Run Part 2 (on the routers only: r1, r2) by typing ./Part2
 
 You can now ping each router from each of it's respective hosts (r1 - h1,h2 | r2 - h3,h4,h5) simultaneously. This is because mulithreading is implemented which creates a new thread for each socket for each interface when the program is run on one or both of the routers. Refer to network diagram on project page for IP addresses to ping each router from their respective hosts.
 
@@ -33,4 +34,8 @@ You can also now ping any host from any other host and the 'local' router (one d
 Actually forwarding the packet to the "next hop" address will be implemented in Part 3.
 
 ## How to run (Part 3):
-Steps 1-9 remain the same from Part 2. Working on adding forwarding features
+Steps 1-8 remain the same from Part 2.
+9. Compile Part3.c by typing "gcc -o Part3 Part3.c -lpthread" (must use -lpthread flag now that the program implements threading) (ignore compile error for now)
+10. Run Part 3 (on the routers only: r1, r2) by typing ./Part3
+
+Still working on adding forwarding features and deliverables
