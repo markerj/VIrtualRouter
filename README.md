@@ -28,4 +28,6 @@
 
 You can now ping each router from each of it's respective hosts (r1 - h1,h2 | r2 - h3,h4,h5) simultaneously. This is because mulithreading is implemented which creates a new thread for each socket for each interface when the program is run on one or both of the routers. Refer to network diagram on project page for IP addresses to ping each router from their respective hosts.
 
-You can also now ping other 'local' hosts and the router will print out the mac address of destination host from arp response. (Getting a bug for some reason when pinging other router or other router's hosts where it prints out the broadband (ff:ff:ff:ff:ff:ff) mac address instead of the other routers ip address) <- still working to resolve bug
+You can also now ping any host from any other host and the 'local' router (one directly connected to host sending ping) will print the mac address of the next hop. This next hop will either be the destination (in the case it's a neighbor host) or it will be the non local router address (in the case the packet needs to be forwarded across machines (from r1 to r2 or vice versa))
+
+Actually forwarding the packet to the "next hop" address will be implemented in Part 3.
