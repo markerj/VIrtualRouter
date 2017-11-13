@@ -519,6 +519,16 @@ void *interfaces(void *args)
                        arphdr->src_addr[3],
                        arphdr->src_addr[4],
                        arphdr->src_addr[5]);
+
+                if (routerNum == 1)
+                {
+                    printf("From eth%d thread: Updating eth header destination\n", ethNum);
+                    ethhdrsend = (struct ethheader *) routerOneForward[ethNum];
+                    memcpy(ethhdrsend->eth_dst, arphdr->src_addr, 6);
+
+                    printf("From eth%d thread: Forwarding packet\n", ethNum);
+                    send(packet_socket, routerOneForward[ethNum], 98, 0);
+                }
             }
 
             else if(routerNum == 1)
