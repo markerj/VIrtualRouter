@@ -100,6 +100,9 @@ char routerTwoLine2[3][12] = {"", "", ""};
 char routerTwoLine3[3][12] = {"", "", ""};
 char routerTwoLine4[3][12] = {"", "", ""};
 
+char routerOneForward[3][1500] = {"", "", ""};
+char routerTwoForward[4][1500] = {"", "", "", ""};
+
 //index corresponds to interface
 //sockets[0] will hold socket on eth0, sockets[1] will hold socket on eth1 etc..
 int sockets[4];
@@ -446,6 +449,16 @@ void *interfaces(void *args)
                            arphdr->src_addr[4],
                            arphdr->src_addr[5]);
 
+                    if (routerNum == 1)
+                    {
+                        printf("From eth%d thread: Updating eth header destination\n", ethNum);
+                        ethhdrsend = (struct ethheader *) routerOneForward[ethNum];
+                        memcpy(ethhdrsend->eth_dst, arphdr->src_addr, 6);
+
+                        printf("From eth%d thread: Forwarding packet\n", ethNum);
+                        send(packet_socket, routerOneForward[ethNum], 98, 0);
+                    }
+
                 }
 
             }
@@ -545,6 +558,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerOneLine0[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(routerOneForward[socketnumber], buf, 1500);
                         send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine1[0], 7) == 0)
@@ -552,6 +566,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerOneLine1[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(routerOneForward[socketnumber], buf, 1500);
                         send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine2[0], 7) == 0)
@@ -559,6 +574,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerOneLine2[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(routerOneForward[socketnumber], buf, 1500);
                         send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerOneLine3[0], 5) == 0)
@@ -589,6 +605,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerOneLine3[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(routerOneForward[socketnumber], buf, 1500);
                         send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else
