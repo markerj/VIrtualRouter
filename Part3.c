@@ -436,14 +436,6 @@ void *interfaces(void *args)
                 else if(ntohs(arphdr->op) == 2)
                 {
                     printf("From eth%d thread: Received ARP response\n", ethNum);
-                    /*printf("From eth%d thread: Destination Address: %02x:%02x:%02x:%02x:%02x:%02x\n",
-                           ethNum,
-                           ethhdr->eth_src[0],
-                           ethhdr->eth_src[1],
-                           ethhdr->eth_src[2],
-                           ethhdr->eth_src[3],
-                           ethhdr->eth_src[4],
-                           ethhdr->eth_src[5]);*/
 
                     printf("From eth%d thread: Destination Address: %02x:%02x:%02x:%02x:%02x:%02x\n",
                            ethNum,
@@ -504,14 +496,6 @@ void *interfaces(void *args)
             else if(ntohs(ethhdr->eth_type) == 0x0806)
             {
                 printf("From eth%d thread: Received ARP response\n", ethNum);
-                /*printf("From eth%d thread: Destination Address: %02x:%02x:%02x:%02x:%02x:%02x\n",
-                       ethNum,
-                       ethhdr->eth_src[0],
-                       ethhdr->eth_src[1],
-                       ethhdr->eth_src[2],
-                       ethhdr->eth_src[3],
-                       ethhdr->eth_src[4],
-                       ethhdr->eth_src[5]);*/
 
                 printf("From eth%d thread: Destination Address: %02x:%02x:%02x:%02x:%02x:%02x\n",
                        ethNum,
