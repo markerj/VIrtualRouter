@@ -45,4 +45,4 @@ Actually forwarding the packet to the "next hop" address will be implemented in 
 9. Compile Part3.c by typing "gcc -o Part3 Part3.c -lpthread" (must use -lpthread flag now that the program implements threading) (ignore compile error for now)
 10. Run Part 3 (on the routers only: r1, r2) by typing ./Part3
 
-Still working on adding forwarding features and deliverables
+Forwarding now working on icmp packets. You can now ping any device on the network from any host.
