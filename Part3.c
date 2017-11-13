@@ -461,8 +461,8 @@ void *interfaces(void *args)
                         ethhdrsend = (struct ethheader *) routerOneForward[ethNum];
                         memcpy(ethhdrsend->eth_dst, arphdr->src_addr, 6);
 
-                        iphdrsend = (struct ipheader *) (routerOneForward[ethNum] + sizeof(struct ethheader));
-                        iphdrsend->ttl -= 1;
+                        /*iphdrsend = (struct ipheader *) (routerOneForward[ethNum] + sizeof(struct ethheader));
+                        iphdrsend->ttl -= 1;*/
 
                         printf("From eth%d thread: Forwarding packet\n", ethNum);
                         send(packet_socket, routerOneForward[ethNum], 98, 0);
@@ -544,8 +544,8 @@ void *interfaces(void *args)
                     ethhdrsend = (struct ethheader *) routerOneForward[ethNum];
                     memcpy(ethhdrsend->eth_dst, arphdr->src_addr, 6);
 
-                    iphdrsend = (struct ipheader *) (routerOneForward[ethNum] + sizeof(struct ethheader));
-                    iphdrsend->ttl -= 1;
+                    /*iphdrsend = (struct ipheader *) (routerOneForward[ethNum] + sizeof(struct ethheader));
+                    iphdrsend->ttl -= 1;*/
 
                     printf("From eth%d thread: Forwarding packet\n", ethNum);
                     send(packet_socket, routerOneForward[ethNum], 98, 0);
