@@ -458,6 +458,15 @@ void *interfaces(void *args)
                         printf("From eth%d thread: Forwarding packet\n", ethNum);
                         send(packet_socket, routerOneForward[ethNum], 98, 0);
                     }
+                    if (routerNum == 2)
+                    {
+                        printf("From eth%d thread: Updating eth header destination\n", ethNum);
+                        ethhdrsend = (struct ethheader *) routerTwoForward[ethNum];
+                        memcpy(ethhdrsend->eth_dst, arphdr->src_addr, 6);
+
+                        printf("From eth%d thread: Forwarding packet\n", ethNum);
+                        send(packet_socket, routerTwoForward[ethNum], 98, 0);
+                    }
 
                 }
 
@@ -528,6 +537,15 @@ void *interfaces(void *args)
 
                     printf("From eth%d thread: Forwarding packet\n", ethNum);
                     send(packet_socket, routerOneForward[ethNum], 98, 0);
+                }
+                if (routerNum == 2)
+                {
+                    printf("From eth%d thread: Updating eth header destination\n", ethNum);
+                    ethhdrsend = (struct ethheader *) routerTwoForward[ethNum];
+                    memcpy(ethhdrsend->eth_dst, arphdr->src_addr, 6);
+
+                    printf("From eth%d thread: Forwarding packet\n", ethNum);
+                    send(packet_socket, routerTwoForward[ethNum], 98, 0);
                 }
             }
 
@@ -664,6 +682,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerTwoLine0[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(routerTwoForward[socketnumber], buf, 1500);
                         send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine1[0], 7) == 0)
@@ -671,6 +690,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerTwoLine1[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(routerTwoForward[socketnumber], buf, 1500);
                         send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine2[0], 7) == 0)
@@ -678,6 +698,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerTwoLine2[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(routerTwoForward[socketnumber], buf, 1500);
                         send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine3[0], 7) == 0)
@@ -685,6 +706,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerTwoLine3[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(routerTwoForward[socketnumber], buf, 1500);
                         send(sockets[socketnumber], sendbuf, 42, 0);
                     }
                     else if(strncmp(ipAddressToString(iphdr->dst_ip), routerTwoLine4[0], 5) == 0)
@@ -715,6 +737,7 @@ void *interfaces(void *args)
                         //send arp request on corresponding interface
                         int socketnumber = routerTwoLine4[2][6] - '0';
                         printf("From eth%d thread: Sending arp request on eth%d\n", ethNum, socketnumber);
+                        memcpy(routerTwoForward[socketnumber], buf, 1500);
                         send(sockets[socketnumber], sendbuf, 42, 0);
 
                     }
