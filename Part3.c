@@ -326,8 +326,8 @@ void *interfaces(void *args)
                 printf("From eth%d thread: Creating Socket on interface %s\n",ethNum, tmp->ifa_name);
 
                 //get local mac address
-                getaddress = tmp->ifa_addr;
-                memcpy(localadr, getaddress->sll_addr, 6);
+                getaddress = (struct sockaddr_ll *)tmp->ifa_addr;
+                memcpy(localadr, (struct sockaddr_in *)getaddress->sll_addr, 6);
 
 
                 //create a packet socket
