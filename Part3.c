@@ -437,7 +437,7 @@ void *interfaces(void *args)
                 {
                     printf("From eth%d thread: Received ARP response\n", ethNum);
 
-                    printf("From eth%d thread: (1) Need to forward ICMP packet to: %02x:%02x:%02x:%02x:%02x:%02x\n",
+                    printf("From eth%d thread: (1) Need to forward packet to: %02x:%02x:%02x:%02x:%02x:%02x\n",
                            ethNum,
                            arphdr->src_addr[0],
                            arphdr->src_addr[1],
@@ -498,7 +498,7 @@ void *interfaces(void *args)
             {
                 printf("From eth%d thread: Received ARP response\n", ethNum);
 
-                printf("From eth%d thread: (2) Need to forward ICMP packet to: %02x:%02x:%02x:%02x:%02x:%02x\n",
+                printf("From eth%d thread: (2) Need to forward packet to: %02x:%02x:%02x:%02x:%02x:%02x\n",
                        ethNum,
                        arphdr->src_addr[0],
                        arphdr->src_addr[1],
