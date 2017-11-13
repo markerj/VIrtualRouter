@@ -312,7 +312,7 @@ void *interfaces(void *args)
         //of our own IP addresses
 
         if (tmp->ifa_addr->sa_family == AF_INET) {
-            getip = tmp->ifa_addr;
+            getip = (struct sockaddr_in *)tmp->ifa_addr;
             memcpy(localip, &(getip->sin_addr.s_addr), 4);
         }
 
@@ -327,7 +327,7 @@ void *interfaces(void *args)
 
                 //get local mac address
                 getaddress = (struct sockaddr_ll *)tmp->ifa_addr;
-                memcpy(localadr, (struct sockaddr_in *)getaddress->sll_addr, 6);
+                memcpy(localadr, getaddress->sll_addr, 6);
 
 
                 //create a packet socket
