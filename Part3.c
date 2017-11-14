@@ -651,7 +651,7 @@ void *interfaces(void *args)
                     else
                     {
                         //destination unreachable
-                        printf("Destination is not on network and is unreachable\n");
+                        printf("\nDestination is not on network and is unreachable\n");
                         //Create ICMP error message
                     }
 
@@ -758,7 +758,7 @@ void *interfaces(void *args)
                     else
                     {
                         //destination unreachable
-                        printf("Destination is not on network and is unreachable\n");
+                        printf("\nDestination is not on network and is unreachable\n");
                         //Create ICMP error message
                     }
 
